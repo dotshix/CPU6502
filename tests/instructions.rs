@@ -592,3 +592,34 @@ fn test_pla_sets_accumulator_and_flags() {
     // Negative flag should be set (bit 7 of A = 1)
     assert!(cpu.get_flag(Flag::Negative));
 }
+
+#[test]
+fn test_pla_sets_zero_flag_if_result_zero() {
+    let mut cpu = Cpu::default();
+
+    cpu.push(0x00);
+    cpu.a = 0xFF;
+
+    cpu.pla();
+
+    assert_eq!(cpu.a, 0x00);
+    assert!(cpu.get_flag(Flag::Zero));
+    assert!(!cpu.get_flag(Flag::Negative));
+}
+
+#[test]
+fn test_dey_decrements_y_and_sets_flags() {
+    let mut cpu = Cpu::default();
+    cpu.y = 0x01;
+
+    cpu.dey();
+
+    // Y should now be 0x00
+    assert_eq!(cpu.y, 0x00);
+
+    // Zero flag should be set (Y == 0)
+    assert!(cpu.get_flag(Flag::Zero));
+
+    // Negative flag should be clear (bit 7 == 0)
+    assert!(!cpu.get_flag(Flag::Negative));
+}
