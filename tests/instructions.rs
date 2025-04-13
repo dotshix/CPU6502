@@ -41,3 +41,33 @@ fn test_brk_instruction() {
     // Interrupt Disable flag should be set
     assert!(cpu.get_flag(Flag::InterruptDisable));
 }
+
+#[test]
+fn test_jsr_instruction() {
+    let mut cpu = Cpu::default();
+
+    // Place JSR at 0x8000 with target address 0x1234
+    cpu.pc = 0x8000;
+    cpu.memory[0x8000] = 0x20; // JSR opcode (for clarity)
+    cpu.memory[0x8001] = 0x34; // target lo
+    cpu.memory[0x8002] = 0x12; // target hi
+
+    let pre_sp = cpu.sp;
+
+    // Call JSR (PC still points to opcode)
+    cpu.jsr();
+
+    // PC should now be set to 0x1234
+    assert_eq!(cpu.pc, 0x1234);
+
+    // SP should be decremented by 2
+    assert_eq!(cpu.sp, pre_sp.wrapping_sub(2));
+
+    // Check that return address 0x8002 was pushed
+    let stack_base = 0x0100;
+    let pushed_pcl = cpu.memory[stack_base + cpu.sp.wrapping_add(1) as usize];
+    let pushed_pch = cpu.memory[stack_base + cpu.sp.wrapping_add(2) as usize];
+    let pushed_pc = ((pushed_pch as u16) << 8) | (pushed_pcl as u16);
+
+    assert_eq!(pushed_pc, 0x8002);
+}
