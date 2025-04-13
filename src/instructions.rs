@@ -89,4 +89,16 @@ impl Cpu {
         self.set_flag(Flag::Zero, self.x == self.fetched);
         self.set_flag(Flag::Negative, res & 0x80 != 0);
     }
+
+    pub fn bit(&mut self) -> u8 {
+        self.fetch();
+
+        let result = self.a & self.fetched;
+
+        self.set_flag(Flag::Zero, result == 0); // A & M == 0?
+        self.set_flag(Flag::Overflow, self.fetched & 0x40 != 0); // Bit 6 of M
+        self.set_flag(Flag::Negative, self.fetched & 0x80 != 0); // Bit 7 of M
+
+        0
+    }
 }

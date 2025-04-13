@@ -8,6 +8,8 @@ pub struct Cpu {
     pub sp: u8,
     /// Status Register (8-bit)
     pub status: u8,
+    /// Accumulator or A Register (8-bit)
+    pub a: u8,
     /// Y register (8-bit)
     pub y: u8,
     /// X register (8-bit)
@@ -117,6 +119,7 @@ impl Default for Cpu {
             pc: 0x0000,
             sp: 0xFD, // Stack starts here on power-up
             status: 0,
+            a: 0,
             y: 0,
             x: 0,
             addr_abs: 0,
