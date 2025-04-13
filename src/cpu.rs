@@ -5,7 +5,7 @@ pub struct Cpu {
     /// Program Counter (16-bit)
     pub pc: u16,
     /// Stack Pointer (8-bit, offset from 0x0100)
-    sp: u8,
+    pub sp: u8,
     /// Status Register (8-bit)
     pub status: u8,
     /// 64KB of addressable memory
