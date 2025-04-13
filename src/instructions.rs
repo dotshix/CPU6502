@@ -59,6 +59,7 @@ impl Cpu {
     }
 
     /// LDY - Load Y
+    // LDY supports: imm, zp0, zpx, abs, absx
     pub fn ldy(&mut self) {
         self.fetch();
         self.y = self.fetched;
