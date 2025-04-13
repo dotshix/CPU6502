@@ -35,4 +35,19 @@ impl Cpu {
 
         self.pc = target;
     }
+
+    /// RTI - Return from Interrupt
+    pub fn rti(&mut self) {
+        // 1. Pull Flags
+        self.status = self.pull();
+        self.status |= 1 << Flag::Unused as u8; // Always set bit 5
+
+        // 2. Pull PC low byte
+        let pcl = self.pull() as u16;
+
+        // 3. Pull high byte
+        let pch = self.pull() as u16;
+
+        self.pc = (pch << 8) | pcl;
+    }
 }

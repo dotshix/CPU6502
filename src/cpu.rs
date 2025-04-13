@@ -48,6 +48,12 @@ impl Cpu {
         self.memory[addr as usize] = value;
         self.sp = self.sp.wrapping_sub(1);
     }
+
+    pub fn pull(&mut self) -> u8 {
+        self.sp = self.sp.wrapping_add(1);
+        let addr = 0x0100 | self.sp as u16;
+        self.memory[addr as usize]
+    }
 }
 
 impl Default for Cpu {
