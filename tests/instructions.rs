@@ -143,3 +143,39 @@ fn test_jsr_then_rts() {
     // Stack pointer should be back to original
     assert_eq!(cpu.sp, sp_before_jsr);
 }
+
+#[test]
+fn test_ldy_immediate() {
+    let mut cpu = Cpu::default();
+
+    // Simulate LDY $42 at 0x8000
+    cpu.pc = 0x8000;
+    cpu.memory[0x8001] = 0x42;
+
+    cpu.imm(); // sets addr_abs to 0x8001
+    cpu.ldy(); // fetches and loads Y
+
+    assert_eq!(cpu.addr_abs, 0x8001);
+    assert_eq!(cpu.y, 0x42);
+    assert!(!cpu.get_flag(Flag::Zero));
+    assert!(!cpu.get_flag(Flag::Negative));
+}
+
+#[test]
+fn test_ldy_absolute() {
+    let mut cpu = Cpu::default();
+
+    cpu.pc = 0x8000;
+    // Absolute target: 0x1234
+    cpu.memory[0x8001] = 0x34; // lo
+    cpu.memory[0x8002] = 0x12; // hi
+    cpu.memory[0x1234] = 0xFF; // value to load into Y
+
+    cpu.abs(); // sets addr_abs to 0x1234
+    cpu.ldy(); // fetches and loads Y
+
+    assert_eq!(cpu.addr_abs, 0x1234);
+    assert_eq!(cpu.y, 0xFF);
+    assert!(!cpu.get_flag(Flag::Zero));
+    assert!(cpu.get_flag(Flag::Negative));
+}
