@@ -669,3 +669,18 @@ fn test_iny_increments_y_and_sets_zero_and_negative_flags() {
     assert!(!cpu.get_flag(Flag::Zero));
     assert!(!cpu.get_flag(Flag::Negative));
 }
+
+#[test]
+fn test_inx_increments_x_and_sets_zero_and_negative_flags() {
+    let mut cpu = Cpu::default();
+    cpu.x = 0x00;
+
+    cpu.inx();
+
+    // Y should now be 0x01
+    assert_eq!(cpu.x, 0x01);
+
+    // Flags: Z = false, N = false
+    assert!(!cpu.get_flag(Flag::Zero));
+    assert!(!cpu.get_flag(Flag::Negative));
+}
