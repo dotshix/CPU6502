@@ -455,3 +455,47 @@ fn test_bit_no_flags_set_when_all_clear() {
     assert!(!cpu.get_flag(Flag::Overflow)); // Bit 6 = 0
     assert!(!cpu.get_flag(Flag::Negative)); // Bit 7 = 0
 }
+
+#[test]
+fn test_sty_zero_page() {
+    let mut cpu = Cpu::default();
+    cpu.y = 0xAB;
+
+    cpu.memory[0x8000] = 0x42; // Operand (zero page address)
+    cpu.pc = 0x8000;
+
+    cpu.zp0(); // addr_abs = 0x0042
+    cpu.sty(); // memory[addr_abs] = y
+
+    assert_eq!(cpu.memory[0x0042], 0xAB);
+}
+
+#[test]
+fn test_sty_zero_page_x_wraps() {
+    let mut cpu = Cpu::default();
+    cpu.y = 0xCD;
+    cpu.x = 0x10;
+
+    cpu.memory[0x8000] = 0xF0; // base addr = 0xF0
+    cpu.pc = 0x8000;
+
+    cpu.zpx(); // addr_abs = (0xF0 + 0x10) & 0xFF = 0x00
+    cpu.sty();
+
+    assert_eq!(cpu.memory[0x0000], 0xCD);
+}
+
+#[test]
+fn test_sty_absolute() {
+    let mut cpu = Cpu::default();
+    cpu.y = 0x77;
+
+    cpu.pc = 0x8000;
+    cpu.memory[0x8001] = 0x34; // lo
+    cpu.memory[0x8002] = 0x12; // hi
+
+    cpu.abs(); // addr_abs = 0x1234
+    cpu.sty();
+
+    assert_eq!(cpu.memory[0x1234], 0x77);
+}

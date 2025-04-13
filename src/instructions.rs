@@ -90,6 +90,7 @@ impl Cpu {
         self.set_flag(Flag::Negative, res & 0x80 != 0);
     }
 
+    /// BIT - Bit Test
     pub fn bit(&mut self) -> u8 {
         self.fetch();
 
@@ -100,5 +101,9 @@ impl Cpu {
         self.set_flag(Flag::Negative, self.fetched & 0x80 != 0); // Bit 7 of M
 
         0
+    }
+    /// STY - Store Y
+    pub fn sty(&mut self) {
+        self.memory[self.addr_abs as usize] = self.y;
     }
 }
