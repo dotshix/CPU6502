@@ -78,4 +78,15 @@ impl Cpu {
         self.set_flag(Flag::Zero, self.y == self.fetched);
         self.set_flag(Flag::Negative, res & 0x80 != 0);
     }
+
+    /// CPX - Compare X
+    pub fn cpx(&mut self) {
+        self.fetch();
+
+        let res = self.x.wrapping_sub(self.fetched);
+
+        self.set_flag(Flag::Carry, self.x >= self.fetched);
+        self.set_flag(Flag::Zero, self.x == self.fetched);
+        self.set_flag(Flag::Negative, res & 0x80 != 0);
+    }
 }

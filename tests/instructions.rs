@@ -321,3 +321,68 @@ fn test_cpy_negative_result_sets_negative_flag() {
     assert!(!cpu.get_flag(Flag::Zero));
     assert!(!cpu.get_flag(Flag::Carry));
 }
+
+#[test]
+fn test_cpx_equal_sets_zero_and_carry() {
+    let mut cpu = Cpu::default();
+    cpu.x = 0x42;
+
+    cpu.pc = 0x8000;
+    cpu.memory[0x8001] = 0x42; // Immediate operand
+
+    cpu.imm(); // addr_abs = 0x8001
+    cpu.cpx();
+
+    assert!(cpu.get_flag(Flag::Zero)); // Equal
+    assert!(cpu.get_flag(Flag::Carry)); // X >= mem
+    assert!(!cpu.get_flag(Flag::Negative)); // 0 - 0x42 = 0, bit 7 clear
+}
+
+#[test]
+fn test_cpx_less_than_clears_carry_sets_negative() {
+    let mut cpu = Cpu::default();
+    cpu.x = 0x10;
+    cpu.memory[0x0042] = 0x20; // X < mem
+    cpu.pc = 0x8000;
+    cpu.memory[0x8000] = 0x42; // zp0 operand
+
+    cpu.zp0(); // sets addr_abs = 0x0042
+    cpu.cpx();
+
+    assert!(!cpu.get_flag(Flag::Zero));
+    assert!(!cpu.get_flag(Flag::Carry)); // x < mem
+    assert!(cpu.get_flag(Flag::Negative)); // 0x10 - 0x20 underflows to negative
+}
+
+#[test]
+fn test_cpx_greater_than_sets_carry() {
+    let mut cpu = Cpu::default();
+    cpu.x = 0x90;
+    cpu.memory[0x1234] = 0x20; // X > mem
+    cpu.pc = 0x8000;
+    cpu.memory[0x8001] = 0x34; // lo
+    cpu.memory[0x8002] = 0x12; // hi
+
+    cpu.abs(); // sets addr_abs = 0x1234
+    cpu.cpx();
+
+    assert!(!cpu.get_flag(Flag::Zero));
+    assert!(cpu.get_flag(Flag::Carry)); // x > mem
+    assert!(!cpu.get_flag(Flag::Negative)); // result not negative
+}
+
+#[test]
+fn test_cpx_negative_result_sets_negative_flag() {
+    let mut cpu = Cpu::default();
+    cpu.x = 0x10;
+
+    cpu.pc = 0x8000;
+    cpu.memory[0x8001] = 0x80;
+
+    cpu.imm();
+    cpu.cpx();
+
+    assert!(cpu.get_flag(Flag::Negative));
+    assert!(!cpu.get_flag(Flag::Zero));
+    assert!(!cpu.get_flag(Flag::Carry));
+}
