@@ -10,6 +10,8 @@ pub struct Cpu {
     pub status: u8,
     /// Y register (8-bit)
     pub y: u8,
+    /// X register (8-bit)
+    pub x: u8,
     pub addr_abs: u16,
     pub fetched: u8,
     /// 64KB of addressable memory
@@ -59,6 +61,9 @@ impl Cpu {
         self.memory[addr as usize]
     }
 
+    // [NOTE] Currently assumes PC is pointing at the *opcode*
+    // Might need to modify this later to match other modes,
+    // where PC is incremented before addressing mode executes.
     pub fn abs(&mut self) -> u8 {
         let lo = self.memory[(self.pc + 1) as usize] as u16;
         let hi = self.memory[(self.pc + 2) as usize] as u16;
@@ -68,6 +73,19 @@ impl Cpu {
 
     pub fn imm(&mut self) -> u8 {
         self.addr_abs = self.pc + 1;
+        self.pc = self.pc.wrapping_add(1);
+        0
+    }
+
+    pub fn zp0(&mut self) -> u8 {
+        self.addr_abs = self.memory[self.pc as usize] as u16;
+        self.pc = self.pc.wrapping_add(1);
+        0
+    }
+
+    pub fn zpx(&mut self) -> u8 {
+        self.addr_abs = self.memory[self.pc as usize].wrapping_add(self.x) as u16;
+        self.pc = self.pc.wrapping_add(1);
         0
     }
 
@@ -85,6 +103,7 @@ impl Default for Cpu {
             sp: 0xFD, // Stack starts here on power-up
             status: 0,
             y: 0,
+            x: 0,
             addr_abs: 0,
             fetched: 0,
             memory: [0; 0x10000],
