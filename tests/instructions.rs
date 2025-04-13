@@ -386,3 +386,72 @@ fn test_cpx_negative_result_sets_negative_flag() {
     assert!(!cpu.get_flag(Flag::Zero));
     assert!(!cpu.get_flag(Flag::Carry));
 }
+
+#[test]
+fn test_bit_sets_zero_flag_if_result_is_zero() {
+    let mut cpu = Cpu::default();
+    cpu.a = 0b0000_0000; // Accumulator = 0
+    cpu.memory[0x0042] = 0b1100_0000; // Memory = non-zero value with bit 7 and bit 6 set
+    cpu.pc = 0x8000;
+    cpu.memory[0x8000] = 0x42;
+
+    cpu.zp0(); // addr_abs = 0x0042
+    cpu.bit();
+
+    assert!(cpu.get_flag(Flag::Zero)); // A & M == 0
+    assert!(cpu.get_flag(Flag::Overflow)); // Bit 6 is 1
+    assert!(cpu.get_flag(Flag::Negative)); // Bit 7 is 1
+}
+
+#[test]
+fn test_bit_clears_zero_flag_if_result_nonzero() {
+    let mut cpu = Cpu::default();
+    cpu.a = 0b0000_0100;
+    cpu.memory[0x1234] = 0b0100_0100; // shares with register A
+
+    cpu.memory[0x8001] = 0x34;
+    cpu.memory[0x8002] = 0x12;
+    cpu.pc = 0x8000;
+
+    cpu.abs(); // addr_abs = 0x1234
+    cpu.bit();
+
+    assert!(!cpu.get_flag(Flag::Zero)); // A & M != 0
+    assert!(cpu.get_flag(Flag::Overflow)); // Bit 6 is 1
+    assert!(!cpu.get_flag(Flag::Negative)); // Bit 7 is 0
+}
+
+#[test]
+fn test_bit_negative_and_overflow_flags_from_memory() {
+    let mut cpu = Cpu::default();
+    cpu.a = 0b1111_1111;
+    cpu.memory[0x0042] = 0b1100_0000; // Bits 7 and 6 set
+
+    cpu.pc = 0x8000;
+    cpu.memory[0x8000] = 0x42;
+
+    cpu.zp0(); // addr_abs = 0x0042
+    cpu.bit();
+
+    assert!(!cpu.get_flag(Flag::Zero)); // A & M != 0
+    assert!(cpu.get_flag(Flag::Overflow)); // Bit 6 is 1
+    assert!(cpu.get_flag(Flag::Negative)); // Bit 7 is 1
+}
+
+#[test]
+fn test_bit_no_flags_set_when_all_clear() {
+    let mut cpu = Cpu::default();
+    cpu.a = 0b0000_0100;
+    cpu.memory[0x1234] = 0b0000_0000; // No bits set
+
+    cpu.memory[0x8001] = 0x34;
+    cpu.memory[0x8002] = 0x12;
+    cpu.pc = 0x8000;
+
+    cpu.abs(); // addr_abs = 0x1234
+    cpu.bit();
+
+    assert!(cpu.get_flag(Flag::Zero)); // A & M == 0
+    assert!(!cpu.get_flag(Flag::Overflow)); // Bit 6 = 0
+    assert!(!cpu.get_flag(Flag::Negative)); // Bit 7 = 0
+}
