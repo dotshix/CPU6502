@@ -67,4 +67,15 @@ impl Cpu {
         self.set_flag(Flag::Zero, self.y == 0);
         self.set_flag(Flag::Negative, self.y & 0x80 != 0);
     }
+
+    /// CPY - Compare Y
+    pub fn cpy(&mut self) {
+        self.fetch();
+
+        let res = self.y.wrapping_sub(self.fetched);
+
+        self.set_flag(Flag::Carry, self.y >= self.fetched);
+        self.set_flag(Flag::Zero, self.y == self.fetched);
+        self.set_flag(Flag::Negative, res & 0x80 != 0);
+    }
 }
