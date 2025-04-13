@@ -526,3 +526,32 @@ fn test_php_pushes_correct_flags() {
     assert_eq!(pushed_flags, expected);
     assert_eq!(pushed_flags & 0b00110000, 0b00110000); // Break + Unused set
 }
+
+#[test]
+fn test_plp_restores_flags() {
+    let mut cpu = Cpu::default();
+
+    // Create a byte with all flags flipped on
+    let flags: u8 = 0b1111_1111;
+
+    // Push this byte to the stack manually
+    cpu.push(flags);
+
+    // Execute PLP to pull status
+    cpu.plp();
+
+    // Check relevant flags are restored
+    // PLP ignores the Break flag (bit 4), so we do not test it.
+    assert!(cpu.get_flag(Flag::Carry));
+    assert!(cpu.get_flag(Flag::Zero));
+    assert!(cpu.get_flag(Flag::InterruptDisable));
+    assert!(cpu.get_flag(Flag::Decimal));
+    assert!(cpu.get_flag(Flag::Overflow));
+    assert!(cpu.get_flag(Flag::Negative));
+
+    // Ensure bit 5 (Unused) is set
+    assert_eq!(
+        cpu.status & (1 << Flag::Unused as u8),
+        1 << Flag::Unused as u8
+    );
+}

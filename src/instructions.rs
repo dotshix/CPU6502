@@ -115,4 +115,14 @@ impl Cpu {
 
         self.push(flags);
     }
+
+    /// PLP - Pull Processor Status
+    pub fn plp(&mut self) {
+        self.status = self.pull();
+
+        // Bit 5 is unused and should always be set to 1.
+        self.status |= 1 << Flag::Unused as u8;
+
+        // Bit 4 (Break) is ignored
+    }
 }
