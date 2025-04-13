@@ -179,3 +179,80 @@ fn test_ldy_absolute() {
     assert!(!cpu.get_flag(Flag::Zero));
     assert!(cpu.get_flag(Flag::Negative));
 }
+
+#[test]
+fn test_zp0_addressing_mode() {
+    let mut cpu = Cpu::default();
+
+    // Simulate program at 0x8000
+    cpu.pc = 0x8000;
+
+    // Place operand for zero page at PC
+    cpu.memory[0x8000] = 0x42; // Will be interpreted as address $0042
+    cpu.memory[0x0042] = 0xAB; // Actual data to load via LDY
+
+    cpu.zp0(); // sets addr_abs to 0x0042
+
+    // Now fetch from addr_abs and load into Y
+    cpu.ldy(); // fetches 0xAB from memory[0x0042]
+
+    // Check internal state
+    assert_eq!(cpu.addr_abs, 0x0042);
+    assert_eq!(cpu.y, 0xAB);
+    assert_eq!(cpu.pc, 0x8001);
+
+    // Flag assertions
+    assert!(!cpu.get_flag(Flag::Zero));
+    assert!(cpu.get_flag(Flag::Negative)); // 0xAB has bit 7 set
+}
+
+#[test]
+fn test_zpx_addressing_mode() {
+    let mut cpu = Cpu::default();
+
+    cpu.pc = 0x8000;
+    cpu.x = 0x10;
+    cpu.memory[0x8000] = 0x20; // base = 0x20
+    cpu.memory[0x0030] = 0x55; // 0x20 + 0x10 = 0x30 (within zero page)
+
+    cpu.zpx(); // should set addr_abs = 0x0030
+    cpu.ldy(); // load Y from addr_abs
+
+    assert_eq!(cpu.addr_abs, 0x0030);
+    assert_eq!(cpu.y, 0x55);
+    assert_eq!(cpu.pc, 0x8001);
+    assert!(!cpu.get_flag(Flag::Zero));
+    assert!(!cpu.get_flag(Flag::Negative));
+}
+
+#[test]
+fn test_absx_no_page_cross() {
+    let mut cpu = Cpu::default();
+
+    // Base address: 0x1230, X = 0x0A → addr_abs = 0x123A
+    cpu.pc = 0x8000;
+    cpu.memory[0x8001] = 0x30; // low byte
+    cpu.memory[0x8002] = 0x12; // high byte
+    cpu.x = 0x0A;
+
+    let extra_cycle = cpu.absx();
+
+    assert_eq!(cpu.addr_abs, 0x123A); //  Correct address
+    assert_eq!(extra_cycle, 0); // No page cross
+}
+
+#[test]
+fn test_absx_with_page_cross() {
+    let mut cpu = Cpu::default();
+
+    // Base = 0x12F0, X = 0x20 → addr_abs = 0x1310 (crosses page)
+    cpu.pc = 0x8000;
+    cpu.memory[0x8001] = 0xF0; // low
+    cpu.memory[0x8002] = 0x12; // high
+    cpu.x = 0x20;
+
+    let extra_cycle = cpu.absx();
+
+    assert_eq!(cpu.addr_abs, 0x1310); //  Correct address
+    assert_eq!(extra_cycle, 1); //  Page crossed
+}
