@@ -50,4 +50,13 @@ impl Cpu {
 
         self.pc = (pch << 8) | pcl;
     }
+
+    /// RTS - Return from Subroutine
+    pub fn rts(&mut self) {
+        let pcl = self.pull() as u16;
+        let pch = self.pull() as u16;
+
+        self.pc = (pch << 8) | pcl;
+        self.pc += 1;
+    }
 }
