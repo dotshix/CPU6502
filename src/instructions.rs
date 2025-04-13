@@ -151,4 +151,11 @@ impl Cpu {
         self.set_flag(Flag::Zero, self.y == 0);
         self.set_flag(Flag::Negative, self.y & 0x80 != 0);
     }
+
+    /// INY - Increment Y
+    pub fn iny(&mut self) {
+        self.y = self.y.wrapping_add(1);
+        self.set_flag(Flag::Zero, self.y == 0);
+        self.set_flag(Flag::Negative, self.y & 0x80 != 0);
+    }
 }
