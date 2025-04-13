@@ -112,3 +112,34 @@ fn test_brk_then_rti() {
     // SP should be back to original
     assert_eq!(cpu.sp, sp_before);
 }
+
+#[test]
+fn test_jsr_then_rts() {
+    let mut cpu = Cpu::default();
+
+    // Initial CPU state
+    cpu.pc = 0x8000;
+
+    // Place a JSR $1234 at $8000
+    cpu.memory[0x8000] = 0x20; // JSR opcode (not used by jsr() itself here)
+    cpu.memory[0x8001] = 0x34; // target lo
+    cpu.memory[0x8002] = 0x12; // target hi
+
+    // Track SP before JSR
+    let sp_before_jsr = cpu.sp;
+
+    // Call JSR — should push 0x8002 and set PC to 0x1234
+    cpu.jsr();
+
+    assert_eq!(cpu.pc, 0x1234);
+    assert_eq!(cpu.sp, sp_before_jsr.wrapping_sub(2));
+
+    // Simulate that RTS is located at the subroutine target
+    cpu.rts();
+
+    // After RTS, we should return to the instruction *after* the original JSR
+    assert_eq!(cpu.pc, 0x8003);
+
+    // Stack pointer should be back to original
+    assert_eq!(cpu.sp, sp_before_jsr);
+}
