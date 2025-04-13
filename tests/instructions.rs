@@ -71,3 +71,44 @@ fn test_jsr_instruction() {
 
     assert_eq!(pushed_pc, 0x8002);
 }
+
+#[test]
+fn test_brk_then_rti() {
+    let mut cpu = Cpu::default();
+
+    // Initial CPU state before interrupt
+    cpu.pc = 0x8000;
+    cpu.status = 0b0011_0101;
+
+    // Set BRK vector to jump to handler at 0x9000
+    cpu.memory[0xFFFE] = 0x00;
+    cpu.memory[0xFFFF] = 0x90;
+
+    // Save stack pointer before BRK
+    let sp_before = cpu.sp;
+
+    // Execute BRK (simulate interrupt)
+    cpu.brk();
+
+    // CPU should now jump to 0x9000
+    assert_eq!(cpu.pc, 0x9000);
+
+    // Check that SP was decremented by 3
+    assert_eq!(cpu.sp, sp_before.wrapping_sub(3));
+
+    // Now simulate that handler modified status
+    cpu.status = 0b1111_0000; // Random changed state
+
+    // Execute RTI to restore original PC and flags
+    cpu.rti();
+
+    // PC should now be 0x8002 (skipped BRK + 1 byte)
+    assert_eq!(cpu.pc, 0x8002);
+
+    // Status should be restored (original + Unused bit set)
+    let expected_flags = 0b0011_0101 | (1 << Flag::Unused as u8);
+    assert_eq!(cpu.status, expected_flags);
+
+    // SP should be back to original
+    assert_eq!(cpu.sp, sp_before);
+}
