@@ -1,6 +1,7 @@
 use crate::cpu::{Cpu, Flag};
 
 impl Cpu {
+    /// BRK - Break (software IRQ)
     pub fn brk(&mut self) {
         // [TODO] Might increment PC before calling this, use `.wrapping_add(1)` instead
         let return_addr = self.pc.wrapping_add(2);
