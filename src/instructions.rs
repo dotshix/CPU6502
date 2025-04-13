@@ -106,4 +106,13 @@ impl Cpu {
     pub fn sty(&mut self) {
         self.memory[self.addr_abs as usize] = self.y;
     }
+
+    /// PHP - Push Processor Status
+    pub fn php(&mut self) {
+        let mut flags = self.status;
+        flags |= 1 << Flag::Break as u8; // Set Break flag (bit 4)
+        flags |= 1 << Flag::Unused as u8; // Set Unused flag (bit 5)
+
+        self.push(flags);
+    }
 }
