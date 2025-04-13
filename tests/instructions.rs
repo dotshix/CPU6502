@@ -499,3 +499,30 @@ fn test_sty_absolute() {
 
     assert_eq!(cpu.memory[0x1234], 0x77);
 }
+
+#[test]
+fn test_php_pushes_correct_flags() {
+    let mut cpu = Cpu::default();
+
+    // Set some status flags
+    cpu.set_flag(Flag::Carry, true);
+    cpu.set_flag(Flag::InterruptDisable, true);
+    cpu.set_flag(Flag::Negative, true);
+
+    let sp_before = cpu.sp;
+
+    cpu.php(); // Pushes status to stack
+
+    // Stack should be decremented by 1
+    assert_eq!(cpu.sp, sp_before.wrapping_sub(1));
+
+    // Read back the pushed status byte
+    // Stack grows down, so actual pushed byte is at SP + 1
+    let pushed_flags = cpu.memory[0x0100 + cpu.sp.wrapping_add(1) as usize];
+
+    // expected pushed flags
+    let expected = cpu.status | (1 << Flag::Break as u8) | (1 << Flag::Unused as u8);
+
+    assert_eq!(pushed_flags, expected);
+    assert_eq!(pushed_flags & 0b00110000, 0b00110000); // Break + Unused set
+}
