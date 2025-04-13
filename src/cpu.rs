@@ -8,6 +8,7 @@ pub struct Cpu {
     pub sp: u8,
     /// Status Register (8-bit)
     pub status: u8,
+    pub addr_abs: u16,
     /// 64KB of addressable memory
     pub memory: [u8; 0x10000],
 }
@@ -54,6 +55,13 @@ impl Cpu {
         let addr = 0x0100 | self.sp as u16;
         self.memory[addr as usize]
     }
+
+    pub fn abs(&mut self) -> u8 {
+        let lo = self.memory[(self.pc + 1) as usize] as u16;
+        let hi = self.memory[(self.pc + 2) as usize] as u16;
+        self.addr_abs = (hi << 8) | lo;
+        0 // no extra cycles
+    }
 }
 
 impl Default for Cpu {
@@ -62,6 +70,7 @@ impl Default for Cpu {
             pc: 0x0000,
             sp: 0xFD, // Stack starts here on power-up
             status: 0,
+            addr_abs: 0,
             memory: [0; 0x10000],
         }
     }
