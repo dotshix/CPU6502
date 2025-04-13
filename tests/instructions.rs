@@ -555,3 +555,20 @@ fn test_plp_restores_flags() {
         1 << Flag::Unused as u8
     );
 }
+
+#[test]
+fn test_pha_pushes_accumulator_to_stack() {
+    let mut cpu = Cpu::default();
+
+    cpu.a = 0x42; // Set A to some value
+    let sp_before = cpu.sp; // Record current stack pointer
+
+    cpu.pha(); // Push A onto the stack
+
+    // Stack pointer should be decremented by 1
+    assert_eq!(cpu.sp, sp_before.wrapping_sub(1));
+
+    // Value pushed should match A
+    let pushed = cpu.memory[0x0100 + cpu.sp.wrapping_add(1) as usize];
+    assert_eq!(pushed, 0x42);
+}

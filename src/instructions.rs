@@ -125,4 +125,9 @@ impl Cpu {
 
         // Bit 4 (Break) is ignored
     }
+
+    /// PHA - Push A
+    pub fn pha(&mut self) {
+        self.push(self.a);
+    }
 }
