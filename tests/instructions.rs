@@ -572,3 +572,23 @@ fn test_pha_pushes_accumulator_to_stack() {
     let pushed = cpu.memory[0x0100 + cpu.sp.wrapping_add(1) as usize];
     assert_eq!(pushed, 0x42);
 }
+
+#[test]
+fn test_pla_sets_accumulator_and_flags() {
+    let mut cpu = Cpu::default();
+
+    // Simulate value 0x80 (bit 7 set) pushed to the stack
+    cpu.push(0x80);
+    cpu.a = 0; // clear A
+
+    cpu.pla(); // Pull into A
+
+    // Accumulator should now be 0x80
+    assert_eq!(cpu.a, 0x80);
+
+    // Zero flag should be false (A != 0)
+    assert!(!cpu.get_flag(Flag::Zero));
+
+    // Negative flag should be set (bit 7 of A = 1)
+    assert!(cpu.get_flag(Flag::Negative));
+}

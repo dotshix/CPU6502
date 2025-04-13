@@ -130,4 +130,11 @@ impl Cpu {
     pub fn pha(&mut self) {
         self.push(self.a);
     }
+
+    /// PLA - Pull A
+    pub fn pla(&mut self) {
+        self.a = self.pull();
+        self.set_flag(Flag::Zero, self.a == 0);
+        self.set_flag(Flag::Negative, self.a & 0x80 != 0);
+    }
 }
