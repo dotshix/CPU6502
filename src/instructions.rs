@@ -57,4 +57,13 @@ impl Cpu {
         self.pc = (pch << 8) | pcl;
         self.pc += 1;
     }
+
+    /// LDY - Load Y
+    pub fn ldy(&mut self) {
+        self.fetch();
+        self.y = self.fetched;
+
+        self.set_flag(Flag::Zero, self.y == 0);
+        self.set_flag(Flag::Negative, self.y & 0x80 != 0);
+    }
 }

@@ -8,7 +8,10 @@ pub struct Cpu {
     pub sp: u8,
     /// Status Register (8-bit)
     pub status: u8,
+    /// Y register (8-bit)
+    pub y: u8,
     pub addr_abs: u16,
+    pub fetched: u8,
     /// 64KB of addressable memory
     pub memory: [u8; 0x10000],
 }
@@ -62,6 +65,12 @@ impl Cpu {
         self.addr_abs = (hi << 8) | lo;
         0 // no extra cycles
     }
+
+    /// fetches the value from memory at the absolute address (`addr_abs`) and stores it in `fetched`
+    pub fn fetch(&mut self) -> u8 {
+        self.fetched = self.memory[self.addr_abs as usize];
+        self.fetched
+    }
 }
 
 impl Default for Cpu {
@@ -70,7 +79,9 @@ impl Default for Cpu {
             pc: 0x0000,
             sp: 0xFD, // Stack starts here on power-up
             status: 0,
+            y: 0,
             addr_abs: 0,
+            fetched: 0,
             memory: [0; 0x10000],
         }
     }
