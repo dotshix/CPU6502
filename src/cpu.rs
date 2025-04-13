@@ -3,13 +3,13 @@
 /// Represents the 6502 CPU core used in the NES.
 pub struct Cpu {
     /// Program Counter (16-bit)
-    pc: u16,
+    pub pc: u16,
     /// Stack Pointer (8-bit, offset from 0x0100)
     sp: u8,
     /// Status Register (8-bit)
-    status: u8,
+    pub status: u8,
     /// 64KB of addressable memory
-    memory: [u8; 0x10000],
+    pub memory: [u8; 0x10000],
 }
 
 pub enum Flag {
@@ -29,18 +29,24 @@ impl Cpu {
         Self::default()
     }
 
-    fn get_flag(&self, flag: Flag) -> bool {
+    pub fn get_flag(&self, flag: Flag) -> bool {
         self.status & (1 << flag as u8) != 0
     }
 
     /// set: bool, true means "set the flag"
     /// false means "clear the flag"
-    fn set_flag(&mut self, flag: Flag, set: bool) {
+    pub fn set_flag(&mut self, flag: Flag, set: bool) {
         if set {
             self.status |= 1 << flag as u8;
         } else {
             self.status &= !(1 << flag as u8);
         }
+    }
+
+    pub fn push(&mut self, value: u8) {
+        let addr = 0x0100 | (self.sp as u16);
+        self.memory[addr as usize] = value;
+        self.sp = self.sp.wrapping_sub(1);
     }
 }
 
