@@ -66,6 +66,11 @@ impl Cpu {
         0 // no extra cycles
     }
 
+    pub fn imm(&mut self) -> u8 {
+        self.addr_abs = self.pc + 1;
+        0
+    }
+
     /// fetches the value from memory at the absolute address (`addr_abs`) and stores it in `fetched`
     pub fn fetch(&mut self) -> u8 {
         self.fetched = self.memory[self.addr_abs as usize];
