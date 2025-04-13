@@ -623,3 +623,34 @@ fn test_dey_decrements_y_and_sets_flags() {
     // Negative flag should be clear (bit 7 == 0)
     assert!(!cpu.get_flag(Flag::Negative));
 }
+
+#[test]
+fn test_tay_transfers_a_to_y_and_sets_flags() {
+    let mut cpu = Cpu::default();
+
+    cpu.a = 0x00;
+    cpu.y = 0xFF; // ensure Y is different
+
+    cpu.tay();
+
+    // Y should now equal A
+    assert_eq!(cpu.y, 0x00);
+
+    // Zero flag should be set (Y == 0)
+    assert!(cpu.get_flag(Flag::Zero));
+
+    // Negative flag should be clear (bit 7 == 0)
+    assert!(!cpu.get_flag(Flag::Negative));
+}
+
+#[test]
+fn test_tay_sets_negative_flag() {
+    let mut cpu = Cpu::default();
+
+    cpu.a = 0x80; // bit 7 set
+    cpu.tay();
+
+    assert_eq!(cpu.y, 0x80);
+    assert!(!cpu.get_flag(Flag::Zero));
+    assert!(cpu.get_flag(Flag::Negative));
+}

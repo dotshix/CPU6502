@@ -144,4 +144,11 @@ impl Cpu {
         self.set_flag(Flag::Zero, self.y == 0);
         self.set_flag(Flag::Negative, self.y & 0x80 != 0);
     }
+
+    /// TAY - Transfer A to Y
+    pub fn tay(&mut self) {
+        self.y = self.a;
+        self.set_flag(Flag::Zero, self.y == 0);
+        self.set_flag(Flag::Negative, self.y & 0x80 != 0);
+    }
 }
