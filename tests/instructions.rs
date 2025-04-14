@@ -716,3 +716,20 @@ fn test_jmp_indirect_sets_pc_correctly() {
 
     assert_eq!(cpu.pc, 0x5678);
 }
+
+#[test]
+fn test_jmp_indirect_page_boundary_bug() {
+    let mut cpu = Cpu::default();
+
+    cpu.pc = 0x8000;
+    cpu.memory[0x8001] = 0xFF; // pointer lo
+    cpu.memory[0x8002] = 0x30; // pointer hi => pointer = $30FF
+
+    cpu.memory[0x30FF] = 0xCD; // low byte of target
+    cpu.memory[0x3000] = 0xAB; // high byte (should be at $3100 but bug uses $3000)
+
+    cpu.ind();
+    cpu.jmp();
+
+    assert_eq!(cpu.pc, 0xABCD); // bug causes wraparound
+}
