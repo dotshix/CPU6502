@@ -15,6 +15,7 @@ pub struct Cpu {
     /// X register (8-bit)
     pub x: u8,
     pub addr_abs: u16,
+    pub addr_rel: i16,
     pub fetched: u8,
     /// 64KB of addressable memory
     pub memory: [u8; 0x10000],
@@ -71,6 +72,14 @@ impl Cpu {
     //
     //     WILL need to refactor later on
     //
+
+    pub fn rel(&mut self) -> u8 {
+        let offset = self.memory[self.pc as usize] as i8;
+        self.addr_rel = offset as i16; // signed offset for branch logic
+        self.pc = self.pc.wrapping_add(1);
+        0
+    }
+
     pub fn ind(&mut self) {
         let ptr_lo = self.memory[(self.pc + 1) as usize] as u16;
         let ptr_hi = self.memory[(self.pc + 2) as usize] as u16;
@@ -149,6 +158,7 @@ impl Default for Cpu {
             y: 0,
             x: 0,
             addr_abs: 0,
+            addr_rel: 0,
             fetched: 0,
             memory: [0; 0x10000],
         }
