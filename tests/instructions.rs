@@ -698,3 +698,21 @@ fn test_jmp_absolute_sets_pc_correctly() {
 
     assert_eq!(cpu.pc, 0x1234);
 }
+
+#[test]
+fn test_jmp_indirect_sets_pc_correctly() {
+    let mut cpu = Cpu::default();
+
+    cpu.pc = 0x8000;
+    cpu.memory[0x8001] = 0x00; // indirect ptr lo
+    cpu.memory[0x8002] = 0x30; // indirect ptr hi
+
+    // Set value at $3000 = $5678
+    cpu.memory[0x3000] = 0x78; // low byte
+    cpu.memory[0x3001] = 0x56; // high byte
+
+    cpu.ind();
+    cpu.jmp();
+
+    assert_eq!(cpu.pc, 0x5678);
+}
