@@ -1132,3 +1132,18 @@ fn test_tya_transfers_y_to_a_and_sets_flags() {
     assert!(!cpu.get_flag(Flag::Zero));
     assert!(!cpu.get_flag(Flag::Negative));
 }
+
+#[test]
+fn test_clv_clears_overflow_flag() {
+    let mut cpu = Cpu::default();
+
+    // Set overflow flag
+    cpu.set_flag(Flag::Overflow, true);
+    assert!(cpu.get_flag(Flag::Overflow)); // check
+
+    // CLV
+    cpu.clv();
+
+    // Check that the overflow flag is cleared
+    assert!(!cpu.get_flag(Flag::Overflow));
+}
