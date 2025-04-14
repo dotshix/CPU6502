@@ -260,4 +260,19 @@ impl Cpu {
             self.pc = self.addr_abs;
         }
     }
+
+    /// BNE - Branch if Not Equal
+    pub fn bne(&mut self) {
+        if !self.get_flag(Flag::Zero) {
+            self.cycles += 1;
+
+            self.addr_abs = self.pc.wrapping_add(self.addr_rel as u16);
+
+            if (self.addr_abs & 0xFF00) != (self.pc & 0xFF00) {
+                self.cycles += 1;
+            }
+
+            self.pc = self.addr_abs;
+        }
+    }
 }
