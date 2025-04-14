@@ -310,4 +310,12 @@ impl Cpu {
     pub fn sei(&mut self) {
         self.set_flag(Flag::InterruptDisable, true);
     }
+
+    /// TYA - Transfer Y to A
+    pub fn tya(&mut self) {
+        self.a = self.y;
+
+        self.set_flag(Flag::Zero, self.a == 0);
+        self.set_flag(Flag::Negative, self.a & 0x80 != 0);
+    }
 }

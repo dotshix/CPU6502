@@ -1109,3 +1109,26 @@ fn test_sei_and_cli_toggle_interrupt_flag() {
     cpu.cli();
     assert!(!cpu.get_flag(Flag::InterruptDisable));
 }
+
+#[test]
+fn test_tya_transfers_y_to_a_and_sets_flags() {
+    let mut cpu = Cpu::default();
+
+    cpu.y = 0x00; // Zero case
+    cpu.tya();
+    assert_eq!(cpu.a, 0x00);
+    assert!(cpu.get_flag(Flag::Zero));
+    assert!(!cpu.get_flag(Flag::Negative));
+
+    cpu.y = 0x80; // Negative case
+    cpu.tya();
+    assert_eq!(cpu.a, 0x80);
+    assert!(!cpu.get_flag(Flag::Zero));
+    assert!(cpu.get_flag(Flag::Negative));
+
+    cpu.y = 0x42; // Normal value, not zero or negative
+    cpu.tya();
+    assert_eq!(cpu.a, 0x42);
+    assert!(!cpu.get_flag(Flag::Zero));
+    assert!(!cpu.get_flag(Flag::Negative));
+}
