@@ -390,4 +390,14 @@ impl Cpu {
         self.set_flag(Flag::Zero, self.a == 0);
         self.set_flag(Flag::Negative, self.a & 0x80 != 0);
     }
+
+    /// CMP - Compare A
+    pub fn cmp(&mut self) {
+        self.fetch();
+        let res = self.a.wrapping_sub(self.fetched);
+
+        self.set_flag(Flag::Carry, self.a >= self.fetched);
+        self.set_flag(Flag::Zero, self.a == self.fetched);
+        self.set_flag(Flag::Negative, res & 0x80 != 0);
+    }
 }
