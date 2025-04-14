@@ -125,6 +125,21 @@ impl Cpu {
         }
     }
 
+    pub fn absy(&mut self) -> u8 {
+        let lo = self.memory[self.pc.wrapping_add(1) as usize] as u16;
+        let hi = self.memory[self.pc.wrapping_add(2) as usize] as u16;
+
+        let base = (hi << 8) | lo;
+        self.addr_abs = base.wrapping_add(self.y as u16);
+
+        // Check if page was crossed
+        if (base & 0xFF00) != (self.addr_abs & 0xFF00) {
+            1 // extra cycle needed
+        } else {
+            0
+        }
+    }
+
     pub fn imm(&mut self) -> u8 {
         self.addr_abs = self.pc + 1;
         self.pc = self.pc.wrapping_add(1);
