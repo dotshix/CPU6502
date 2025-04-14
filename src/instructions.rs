@@ -322,4 +322,14 @@ impl Cpu {
     pub fn clv(&mut self) {
         self.set_flag(Flag::Overflow, false);
     }
+
+    /// CLD - Clear Decimal
+    pub fn cld(&mut self) {
+        self.set_flag(Flag::Decimal, false);
+    }
+
+    /// SED - Set Decimal
+    pub fn sed(&mut self) {
+        self.set_flag(Flag::Decimal, true);
+    }
 }

@@ -1147,3 +1147,19 @@ fn test_clv_clears_overflow_flag() {
     // Check that the overflow flag is cleared
     assert!(!cpu.get_flag(Flag::Overflow));
 }
+
+#[test]
+fn test_sed_and_cld_toggle_decimal_flag() {
+    let mut cpu = Cpu::default();
+
+    // Set Decimal flag
+    cpu.sed();
+    assert!(cpu.get_flag(Flag::Decimal), "SED should set Decimal flag");
+
+    // Clear Decimal flag
+    cpu.cld();
+    assert!(
+        !cpu.get_flag(Flag::Decimal),
+        "CLD should clear Decimal flag"
+    );
+}
