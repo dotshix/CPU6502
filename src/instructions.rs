@@ -359,6 +359,23 @@ impl Cpu {
         self.set_flag(Flag::Zero, self.a == 0);
         self.set_flag(Flag::Negative, self.a & 0x80 != 0);
     }
+    /// ADC - Add with Carry
+    pub fn adc(&mut self) {
+        self.fetch();
+        let carry_in = if self.get_flag(Flag::Carry) { 1 } else { 0 };
+
+        let a = self.a;
+        let m = self.fetched;
+
+        let result = a as u16 + m as u16 + carry_in as u16;
+
+        self.set_flag(Flag::Carry, result > 0xFF);
+        self.set_flag(Flag::Zero, (result & 0xFF) == 0);
+        self.set_flag(Flag::Overflow, (!(a ^ m) & (a ^ result as u8) & 0x80) != 0);
+        self.set_flag(Flag::Negative, (result & 0x80) != 0);
+
+        self.a = result as u8;
+    }
 
     /// STA - Store A
     pub fn sta(&mut self) {
