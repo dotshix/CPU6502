@@ -350,4 +350,13 @@ impl Cpu {
         self.set_flag(Flag::Zero, self.a == 0);
         self.set_flag(Flag::Negative, self.a & 0x80 != 0);
     }
+
+    /// EOR - Bitwise Exclusive OR
+    pub fn eor(&mut self) {
+        self.fetch();
+        self.a ^= self.fetched;
+
+        self.set_flag(Flag::Zero, self.a == 0);
+        self.set_flag(Flag::Negative, self.a & 0x80 != 0);
+    }
 }
