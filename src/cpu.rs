@@ -100,6 +100,33 @@ impl Cpu {
         self.addr_abs = (next_byte << 8) | addr_lo;
     }
 
+    /// Indexed Indirect (X)
+    pub fn indx(&mut self) {
+        let base = self.memory[self.pc as usize].wrapping_add(self.x); // operand + X (with wrap)
+        let ptr_lo = self.memory[base as usize] as u16;
+        let ptr_hi = self.memory[base.wrapping_add(1) as usize] as u16;
+
+        self.addr_abs = (ptr_hi << 8) | ptr_lo;
+        self.pc = self.pc.wrapping_add(1); // advance PC past operand
+    }
+
+    /// Indirect Indexed (Y)
+    pub fn indy(&mut self) -> u8 {
+        let base = self.memory[self.pc as usize];
+        let ptr_lo = self.memory[base as usize] as u16;
+        let ptr_hi = self.memory[base.wrapping_add(1) as usize] as u16;
+
+        let base_addr = (ptr_hi << 8) | ptr_lo;
+        self.addr_abs = base_addr.wrapping_add(self.y as u16);
+        self.pc = self.pc.wrapping_add(1); // advance PC past operand
+
+        if (base_addr & 0xFF00) != (self.addr_abs & 0xFF00) {
+            1 // crossed page, extra cycle
+        } else {
+            0
+        }
+    }
+
     // [NOTE] Currently assumes PC is pointing at the *opcode*
     // Might need to modify this later to match other modes,
     // where PC is incremented before addressing mode executes.
