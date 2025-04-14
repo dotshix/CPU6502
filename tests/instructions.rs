@@ -747,3 +747,17 @@ fn test_bpl_taken_no_page_cross() {
 
     assert_eq!(cpu.pc, 0x8003);
 }
+
+#[test]
+fn test_bpl_not_taken() {
+    let mut cpu = Cpu::default();
+    cpu.pc = 0x8000;
+    cpu.set_flag(Flag::Negative, true); // N = 1, so no branch
+
+    // Set offset to +2 (but should be ignored)
+    cpu.memory[0x8000] = 0x02;
+    cpu.rel(); // Still called (to mimic real usage)
+    cpu.bpl();
+
+    assert_eq!(cpu.pc, 0x8001); // PC should not change
+}
