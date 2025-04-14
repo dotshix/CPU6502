@@ -897,3 +897,44 @@ fn test_bvs_taken_with_page_cross() {
 
     assert_eq!(cpu.pc, 0x8102); // should be 0x80FF + 3
 }
+
+#[test]
+fn test_bcc_taken_no_page_cross() {
+    let mut cpu = Cpu::default();
+    cpu.pc = 0x8000;
+    cpu.set_flag(Flag::Carry, false); // N = 0, so branch is taken
+
+    // Set offset to +2
+    cpu.memory[0x8000] = 0x02;
+    cpu.rel(); // Sets addr_rel = 0x02
+    cpu.bcc();
+
+    assert_eq!(cpu.pc, 0x8003);
+}
+
+#[test]
+fn test_bcc_not_taken() {
+    let mut cpu = Cpu::default();
+    cpu.pc = 0x8000;
+    cpu.set_flag(Flag::Carry, true); // N = 1, so no branch
+
+    // Set offset to +2 (but should be ignored)
+    cpu.memory[0x8000] = 0x02;
+    cpu.rel(); // Still called (to mimic real usage)
+    cpu.bcc();
+
+    assert_eq!(cpu.pc, 0x8001); // PC should not change
+}
+
+#[test]
+fn test_bcc_taken_with_page_cross() {
+    let mut cpu = Cpu::default();
+    cpu.pc = 0x80FE;
+    cpu.set_flag(Flag::Carry, false); // N = 0, should branch
+
+    cpu.memory[0x80FE] = 0x03; // offset must be at current PC
+    cpu.rel(); // now reads 0x03, sets addr_rel, pc = 0x80FF
+    cpu.bcc(); // 0x80FF + 3 = 0x8102 (page cross)
+
+    assert_eq!(cpu.pc, 0x8102); // should be 0x80FF + 3
+}
