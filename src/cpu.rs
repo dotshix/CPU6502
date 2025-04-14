@@ -63,6 +63,32 @@ impl Cpu {
         self.memory[addr as usize]
     }
 
+    // Addressing modes below
+    // [NOTE] In abs/absx we are not modifying pc. I am however modifying it in the rest. This is a mistake
+    // A cleaner model should be:
+    //     - Let the *main instruction decode* logic handle `pc` incrementing after reading operands
+    //     - Addressing modes only compute the effective address (`addr_abs`) using operands already fetched
+    //
+    //     WILL need to refactor later on
+    //
+    pub fn ind(&mut self) {
+        let ptr_lo = self.memory[(self.pc + 1) as usize] as u16;
+        let ptr_hi = self.memory[(self.pc + 2) as usize] as u16;
+
+        let ptr = (ptr_hi << 8) | ptr_lo;
+
+        let addr_lo = self.memory[ptr as usize] as u16;
+
+        // 6502 bug: if low byte is $FF, wrap around to beginning of page
+        let next_byte = if ptr_lo == 0x00FF {
+            self.memory[(ptr & 0xFF00) as usize] as u16 // Wrap to $xx00
+        } else {
+            self.memory[(ptr + 1) as usize] as u16
+        };
+
+        self.addr_abs = (next_byte << 8) | addr_lo;
+    }
+
     // [NOTE] Currently assumes PC is pointing at the *opcode*
     // Might need to modify this later to match other modes,
     // where PC is incremented before addressing mode executes.
