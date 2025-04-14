@@ -185,4 +185,19 @@ impl Cpu {
             self.pc = self.addr_abs;
         }
     }
+
+    /// BMI - Branch if Minus
+    pub fn bmi(&mut self) {
+        if self.get_flag(Flag::Negative) {
+            self.cycles += 1;
+
+            self.addr_abs = self.pc.wrapping_add(self.addr_rel as u16);
+
+            if (self.addr_abs & 0xFF00) != (self.pc & 0xFF00) {
+                self.cycles += 1;
+            }
+
+            self.pc = self.addr_abs;
+        }
+    }
 }
