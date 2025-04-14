@@ -295,4 +295,9 @@ impl Cpu {
     pub fn clc(&mut self) {
         self.set_flag(Flag::Carry, false);
     }
+
+    /// SEC - Set Carry
+    pub fn sec(&mut self) {
+        self.set_flag(Flag::Carry, true);
+    }
 }

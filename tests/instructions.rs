@@ -1076,3 +1076,20 @@ fn test_clc_clears_carry_flag() {
     // Assert carry flag is now cleared
     assert!(!cpu.get_flag(Flag::Carry));
 }
+
+#[test]
+fn test_clc_then_sec_carry_flag_behavior() {
+    let mut cpu = Cpu::default();
+
+    // Carry flag starts clear
+    cpu.set_flag(Flag::Carry, true);
+    cpu.clc();
+    assert!(
+        !cpu.get_flag(Flag::Carry),
+        "CLC should clear the Carry flag"
+    );
+
+    // Then set the Carry flag again
+    cpu.sec();
+    assert!(cpu.get_flag(Flag::Carry), "SEC should set the Carry flag");
+}
