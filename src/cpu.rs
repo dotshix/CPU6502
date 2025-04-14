@@ -14,6 +14,8 @@ pub struct Cpu {
     pub y: u8,
     /// X register (8-bit)
     pub x: u8,
+    /// Counts how many cycles the instruction has remaining
+    pub cycles: u8,
     pub addr_abs: u16,
     pub addr_rel: i16,
     pub fetched: u8,
@@ -157,6 +159,7 @@ impl Default for Cpu {
             a: 0,
             y: 0,
             x: 0,
+            cycles: 0,
             addr_abs: 0,
             addr_rel: 0,
             fetched: 0,

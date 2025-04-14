@@ -166,8 +166,23 @@ impl Cpu {
         self.set_flag(Flag::Negative, self.x & 0x80 != 0);
     }
 
-    // JMP - Jump
+    /// JMP - Jump
     pub fn jmp(&mut self) {
         self.pc = self.addr_abs;
+    }
+
+    /// BPL - Branch if Plus
+    pub fn bpl(&mut self) {
+        if !self.get_flag(Flag::Negative) {
+            self.cycles += 1;
+
+            self.addr_abs = self.pc.wrapping_add(self.addr_rel as u16);
+
+            if (self.addr_abs & 0xFF00) != (self.pc & 0xFF00) {
+                self.cycles += 1;
+            }
+
+            self.pc = self.addr_abs;
+        }
     }
 }
