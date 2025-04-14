@@ -359,4 +359,9 @@ impl Cpu {
         self.set_flag(Flag::Zero, self.a == 0);
         self.set_flag(Flag::Negative, self.a & 0x80 != 0);
     }
+
+    /// STA - Store A
+    pub fn sta(&mut self) {
+        self.memory[self.addr_abs as usize] = self.a;
+    }
 }
