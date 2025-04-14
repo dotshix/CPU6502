@@ -381,4 +381,13 @@ impl Cpu {
     pub fn sta(&mut self) {
         self.memory[self.addr_abs as usize] = self.a;
     }
+
+    /// LDA - Load A
+    pub fn lda(&mut self) {
+        self.fetch();
+        self.a = self.fetched;
+
+        self.set_flag(Flag::Zero, self.a == 0);
+        self.set_flag(Flag::Negative, self.a & 0x80 != 0);
+    }
 }
