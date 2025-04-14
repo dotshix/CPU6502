@@ -300,4 +300,14 @@ impl Cpu {
     pub fn sec(&mut self) {
         self.set_flag(Flag::Carry, true);
     }
+
+    /// CLI - Clear Interrupt Disable
+    pub fn cli(&mut self) {
+        self.set_flag(Flag::InterruptDisable, false);
+    }
+
+    /// SEI - Set Interrupt Disable
+    pub fn sei(&mut self) {
+        self.set_flag(Flag::InterruptDisable, true);
+    }
 }

@@ -1093,3 +1093,19 @@ fn test_clc_then_sec_carry_flag_behavior() {
     cpu.sec();
     assert!(cpu.get_flag(Flag::Carry), "SEC should set the Carry flag");
 }
+
+#[test]
+fn test_sei_and_cli_toggle_interrupt_flag() {
+    let mut cpu = Cpu::default();
+
+    // Initially, the interrupt disable flag should be clear (0)
+    assert!(!cpu.get_flag(Flag::InterruptDisable));
+
+    // Set it using SEI
+    cpu.sei();
+    assert!(cpu.get_flag(Flag::InterruptDisable));
+
+    // Clear it again using CLI
+    cpu.cli();
+    assert!(!cpu.get_flag(Flag::InterruptDisable));
+}
