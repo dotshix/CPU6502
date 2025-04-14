@@ -733,3 +733,17 @@ fn test_jmp_indirect_page_boundary_bug() {
 
     assert_eq!(cpu.pc, 0xABCD); // bug causes wraparound
 }
+
+#[test]
+fn test_bpl_taken_no_page_cross() {
+    let mut cpu = Cpu::default();
+    cpu.pc = 0x8000;
+    cpu.set_flag(Flag::Negative, false); // N = 0, so branch is taken
+
+    // Set offset to +2
+    cpu.memory[0x8000] = 0x02;
+    cpu.rel(); // Sets addr_rel = 0x02
+    cpu.bpl();
+
+    assert_eq!(cpu.pc, 0x8003);
+}
