@@ -1163,3 +1163,139 @@ fn test_sed_and_cld_toggle_decimal_flag() {
         "CLD should clear Decimal flag"
     );
 }
+
+#[test]
+fn test_ora_immediate() {
+    let mut cpu = Cpu::default();
+    cpu.a = 0b0000_1100;
+    cpu.pc = 0x8000;
+    cpu.memory[0x8001] = 0b1111_0000;
+
+    cpu.imm(); // addr_abs = 0x8001; increments PC by 1
+    cpu.ora();
+
+    assert_eq!(cpu.a, 0b1111_1100);
+    assert!(cpu.get_flag(Flag::Negative));
+    assert!(!cpu.get_flag(Flag::Zero));
+}
+
+#[test]
+fn test_ora_zeropage() {
+    let mut cpu = Cpu::default();
+    cpu.a = 0x01;
+    cpu.memory[0x0042] = 0x02;
+    cpu.memory[0x8000] = 0x42;
+    cpu.pc = 0x8000;
+
+    cpu.zp0(); // addr_abs = 0x0042
+    cpu.ora();
+
+    assert_eq!(cpu.a, 0x03);
+    assert!(!cpu.get_flag(Flag::Zero));
+}
+
+#[test]
+fn test_ora_zeropage_x() {
+    let mut cpu = Cpu::default();
+    cpu.a = 0x01;
+    cpu.x = 0x10;
+    cpu.memory[0x0052] = 0x02;
+    cpu.memory[0x8000] = 0x42;
+    cpu.pc = 0x8000;
+
+    cpu.zpx(); // addr_abs = 0x42 + 0x10 = 0x52
+    cpu.ora();
+
+    assert_eq!(cpu.a, 0x03);
+}
+
+#[test]
+fn test_ora_absolute() {
+    let mut cpu = Cpu::default();
+    cpu.a = 0x10;
+    cpu.memory[0x1234] = 0x20;
+    cpu.memory[0x8001] = 0x34;
+    cpu.memory[0x8002] = 0x12;
+    cpu.pc = 0x8000;
+
+    cpu.abs(); // addr_abs = 0x1234
+    cpu.ora();
+
+    assert_eq!(cpu.a, 0x30);
+}
+
+#[test]
+fn test_ora_absolute_x() {
+    let mut cpu = Cpu::default();
+    cpu.a = 0x10;
+    cpu.x = 0x01;
+    cpu.memory[0x1235] = 0x20;
+    cpu.memory[0x8001] = 0x34;
+    cpu.memory[0x8002] = 0x12;
+    cpu.pc = 0x8000;
+
+    cpu.absx(); // addr_abs = 0x1234 + 1 = 0x1235
+    cpu.ora();
+
+    assert_eq!(cpu.a, 0x30);
+}
+
+#[test]
+fn test_ora_absolute_y() {
+    let mut cpu = Cpu::default();
+    cpu.a = 0x10;
+    cpu.y = 0x01;
+    cpu.memory[0x1235] = 0x20;
+    cpu.memory[0x8001] = 0x34;
+    cpu.memory[0x8002] = 0x12;
+    cpu.pc = 0x8000;
+
+    cpu.absy(); // addr_abs = 0x1234 + 1 = 0x1235
+    cpu.ora();
+
+    assert_eq!(cpu.a, 0x30);
+}
+
+#[test]
+fn test_ora_indirect_x() {
+    let mut cpu = Cpu::default();
+    cpu.a = 0x01;
+    cpu.x = 0x04;
+    cpu.pc = 0x8000;
+    cpu.memory[0x8000] = 0x10; // operand = $10
+
+    cpu.memory[0x0014] = 0x34;
+    cpu.memory[0x0015] = 0x12;
+
+    // Target memory to OR with A
+    cpu.memory[0x1234] = 0x02;
+
+    cpu.indx(); // sets addr_abs, updates PC
+    cpu.ora(); // fetches from addr_abs and ORs into A
+
+    assert_eq!(cpu.a, 0x03);
+    assert!(!cpu.get_flag(Flag::Zero));
+    assert!(!cpu.get_flag(Flag::Negative));
+}
+
+#[test]
+fn test_ora_indirect_y() {
+    let mut cpu = Cpu::default();
+    cpu.a = 0x01;
+    cpu.y = 0x01;
+    cpu.pc = 0x8000;
+    cpu.memory[0x8000] = 0x10; // operand = $10
+
+    cpu.memory[0x0010] = 0x34;
+    cpu.memory[0x0011] = 0x12;
+
+    // Value at final address
+    cpu.memory[0x1235] = 0x02;
+
+    cpu.indy(); // sets addr_abs, updates PC
+    cpu.ora();
+
+    assert_eq!(cpu.a, 0x03);
+    assert!(!cpu.get_flag(Flag::Zero));
+    assert!(!cpu.get_flag(Flag::Negative));
+}
