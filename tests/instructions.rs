@@ -684,3 +684,17 @@ fn test_inx_increments_x_and_sets_zero_and_negative_flags() {
     assert!(!cpu.get_flag(Flag::Zero));
     assert!(!cpu.get_flag(Flag::Negative));
 }
+
+#[test]
+fn test_jmp_absolute_sets_pc_correctly() {
+    let mut cpu = Cpu::default();
+
+    cpu.pc = 0x8000;
+    cpu.memory[0x8001] = 0x34; // low byte
+    cpu.memory[0x8002] = 0x12; // high byte
+
+    cpu.abs();
+    cpu.jmp();
+
+    assert_eq!(cpu.pc, 0x1234);
+}
