@@ -1061,3 +1061,18 @@ fn test_beq_taken_with_page_cross() {
 
     assert_eq!(cpu.pc, 0x8102); // should be 0x80FF + 3
 }
+
+#[test]
+fn test_clc_clears_carry_flag() {
+    let mut cpu = Cpu::default();
+
+    // Set the carry flag
+    cpu.set_flag(Flag::Carry, true);
+    assert!(cpu.get_flag(Flag::Carry)); // Ensure it is set
+
+    // CLC
+    cpu.clc();
+
+    // Assert carry flag is now cleared
+    assert!(!cpu.get_flag(Flag::Carry));
+}

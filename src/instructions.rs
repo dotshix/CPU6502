@@ -290,4 +290,9 @@ impl Cpu {
             self.pc = self.addr_abs;
         }
     }
+
+    /// CLC - Clear Carry
+    pub fn clc(&mut self) {
+        self.set_flag(Flag::Carry, false);
+    }
 }
