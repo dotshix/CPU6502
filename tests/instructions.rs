@@ -761,3 +761,16 @@ fn test_bpl_not_taken() {
 
     assert_eq!(cpu.pc, 0x8001); // PC should not change
 }
+
+#[test]
+fn test_bpl_taken_with_page_cross() {
+    let mut cpu = Cpu::default();
+    cpu.pc = 0x80FE;
+    cpu.set_flag(Flag::Negative, false); // N = 0, should branch
+
+    cpu.memory[0x80FE] = 0x03; // offset must be at current PC
+    cpu.rel(); // now reads 0x03, sets addr_rel, pc = 0x80FF
+    cpu.bpl(); // 0x80FF + 3 = 0x8102 (page cross)
+
+    assert_eq!(cpu.pc, 0x8102); // should be 0x80FF + 3
+}
