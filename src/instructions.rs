@@ -400,4 +400,24 @@ impl Cpu {
         self.set_flag(Flag::Zero, self.a == self.fetched);
         self.set_flag(Flag::Negative, res & 0x80 != 0);
     }
+
+    /// SBC - Subtract with Carry
+    pub fn sbc(&mut self) {
+        self.fetch();
+
+        let value = (self.fetched as u16) ^ 0x00FF; // bitwise NOT of fetched
+        let carry_in = if self.get_flag(Flag::Carry) { 1 } else { 0 };
+
+        let sum = self.a as u16 + value + carry_in;
+
+        self.set_flag(Flag::Carry, sum > 0xFF);
+        self.set_flag(Flag::Zero, (sum & 0xFF) == 0);
+        self.set_flag(
+            Flag::Overflow,
+            ((sum ^ self.a as u16) & (sum ^ value) & 0x80) != 0,
+        );
+        self.set_flag(Flag::Negative, (sum & 0x80) != 0);
+
+        self.a = (sum & 0xFF) as u8; // can leabe out 0xFF but its less clear
+    }
 }
