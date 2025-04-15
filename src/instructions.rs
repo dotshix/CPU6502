@@ -420,4 +420,35 @@ impl Cpu {
 
         self.a = (sum & 0xFF) as u8; // can leabe out 0xFF but its less clear
     }
+
+    /// ASL - Arithmetic Shift Left (Accumulator)
+    pub fn asl_acc(&mut self) {
+        // get carry from bit 7
+        self.set_flag(Flag::Carry, self.a & 0x80 != 0);
+
+        // Shift A left by 1
+        self.a <<= 1;
+
+        self.set_flag(Flag::Zero, self.a == 0);
+        self.set_flag(Flag::Negative, self.a & 0x80 != 0);
+    }
+
+    /// ASL - Arithmetic Shift Left (Memory)
+    pub fn asl_mem(&mut self) {
+        let value = self.memory[self.addr_abs as usize];
+
+        // [Read-Modify-Write] Write original value back
+        self.memory[self.addr_abs as usize] = value;
+
+        // Step 2: Perform shift
+        let result = value << 1;
+
+        // Step 3: Set flags
+        self.set_flag(Flag::Carry, value & 0x80 != 0);
+        self.set_flag(Flag::Zero, result == 0);
+        self.set_flag(Flag::Negative, result & 0x80 != 0);
+
+        // Step 4: Write result
+        self.memory[self.addr_abs as usize] = result;
+    }
 }
