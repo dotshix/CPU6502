@@ -516,4 +516,38 @@ impl Cpu {
 
         self.a = result;
     }
+
+    /// ROR - Rotate Right (Memory)
+    pub fn ror_mem(&mut self) {
+        let value = self.memory[self.addr_abs as usize];
+
+        // [Read-Modify-Write] Write original value back
+        self.memory[self.addr_abs as usize] = value;
+
+        let carry_flag = if self.get_flag(Flag::Carry) { 1 } else { 0 };
+
+        // Step 2: Perform shift
+        let res = (value >> 1) | (carry_flag << 7);
+
+        // Step 3: Set flags
+        self.set_flag(Flag::Carry, value & 0x01 != 0);
+        self.set_flag(Flag::Zero, res == 0);
+        self.set_flag(Flag::Negative, res & 0x80 != 0);
+
+        // Step 4: Write result
+        self.memory[self.addr_abs as usize] = res;
+    }
+
+    /// ROR - Rotate Right (Accumulator)
+    pub fn ror_acc(&mut self) {
+        let carry_in = if self.get_flag(Flag::Carry) { 1 } else { 0 };
+        let old_a = self.a;
+        let result = (old_a >> 1) | (carry_in << 7);
+
+        self.set_flag(Flag::Carry, old_a & 0x01 != 0);
+        self.set_flag(Flag::Zero, result == 0);
+        self.set_flag(Flag::Negative, result & 0x80 != 0);
+
+        self.a = result;
+    }
 }
