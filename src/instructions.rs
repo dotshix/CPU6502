@@ -593,4 +593,22 @@ impl Cpu {
     pub fn txs(&mut self) {
         self.sp = self.x;
     }
+
+    /// DEC - Decrement Memory
+    pub fn dec(&mut self) {
+        let value = self.memory[self.addr_abs as usize];
+
+        // [Read-Modify-Write] Write original value back
+        self.memory[self.addr_abs as usize] = value;
+
+        // Step 2: Perform math
+        let res = value.wrapping_sub(1);
+
+        // Step 3: Set flags
+        self.set_flag(Flag::Zero, res == 0);
+        self.set_flag(Flag::Negative, res & 0x80 != 0);
+
+        // Step 4: Write result
+        self.memory[self.addr_abs as usize] = res;
+    }
 }
