@@ -588,4 +588,9 @@ impl Cpu {
         self.set_flag(Flag::Zero, self.x == 0);
         self.set_flag(Flag::Negative, self.x & 0x80 != 0);
     }
+
+    /// TXS - Transfer X to Stack Pointer
+    pub fn txs(&mut self) {
+        self.sp = self.x;
+    }
 }
