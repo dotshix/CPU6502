@@ -550,4 +550,9 @@ impl Cpu {
 
         self.a = result;
     }
+
+    /// STX - Store X
+    pub fn stx(&mut self) {
+        self.memory[self.addr_abs as usize] = self.x;
+    }
 }
