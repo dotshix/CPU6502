@@ -504,4 +504,16 @@ impl Cpu {
         // Step 4: Write result
         self.memory[self.addr_abs as usize] = res;
     }
+
+    /// LSR - Logical Shift Right (Accumulator)
+    pub fn lsr_acc(&mut self) {
+        let old_a = self.a;
+        let result = old_a >> 1;
+
+        self.set_flag(Flag::Carry, old_a & 0x1 != 0);
+        self.set_flag(Flag::Zero, result == 0);
+        self.set_flag(Flag::Negative, result & 0x80 != 0);
+
+        self.a = result;
+    }
 }
