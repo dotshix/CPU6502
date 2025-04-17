@@ -555,4 +555,12 @@ impl Cpu {
     pub fn stx(&mut self) {
         self.memory[self.addr_abs as usize] = self.x;
     }
+
+    /// TXA - Transfer X to A
+    pub fn txa(&mut self) {
+        self.a = self.x;
+
+        self.set_flag(Flag::Zero, self.a == 0);
+        self.set_flag(Flag::Negative, self.a & 0x80 != 0);
+    }
 }
