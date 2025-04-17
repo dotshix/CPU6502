@@ -517,7 +517,7 @@ impl Cpu {
         self.a = result;
     }
 
-    /// ROL - Rotate Right (Memory)
+    /// ROR - Rotate Right (Memory)
     pub fn ror_mem(&mut self) {
         let value = self.memory[self.addr_abs as usize];
 
@@ -538,7 +538,7 @@ impl Cpu {
         self.memory[self.addr_abs as usize] = res;
     }
 
-    /// ROr - Rotate Right (Accumulator)
+    /// ROR - Rotate Right (Accumulator)
     pub fn ror_acc(&mut self) {
         let carry_in = if self.get_flag(Flag::Carry) { 1 } else { 0 };
         let old_a = self.a;
