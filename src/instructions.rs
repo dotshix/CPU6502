@@ -611,4 +611,12 @@ impl Cpu {
         // Step 4: Write result
         self.memory[self.addr_abs as usize] = res;
     }
+
+    /// DEX - Decrement X
+    pub fn dex(&mut self) {
+        self.x = self.x.wrapping_sub(1);
+
+        self.set_flag(Flag::Zero, self.x == 0);
+        self.set_flag(Flag::Negative, self.x & 0x80 != 0);
+    }
 }
