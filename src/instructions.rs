@@ -563,4 +563,12 @@ impl Cpu {
         self.set_flag(Flag::Zero, self.a == 0);
         self.set_flag(Flag::Negative, self.a & 0x80 != 0);
     }
+
+    /// TAX - Transfer A to X
+    pub fn tax(&mut self) {
+        self.x = self.a;
+
+        self.set_flag(Flag::Zero, self.a == 0);
+        self.set_flag(Flag::Negative, self.a & 0x80 != 0);
+    }
 }
