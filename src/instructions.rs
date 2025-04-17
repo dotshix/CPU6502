@@ -580,4 +580,12 @@ impl Cpu {
         self.set_flag(Flag::Zero, self.x == 0);
         self.set_flag(Flag::Negative, self.x & 0x80 != 0);
     }
+
+    /// TSX - Transfer Stack Pointer to X
+    pub fn tsx(&mut self) {
+        self.x = self.sp;
+
+        self.set_flag(Flag::Zero, self.x == 0);
+        self.set_flag(Flag::Negative, self.x & 0x80 != 0);
+    }
 }
