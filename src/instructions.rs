@@ -619,4 +619,22 @@ impl Cpu {
         self.set_flag(Flag::Zero, self.x == 0);
         self.set_flag(Flag::Negative, self.x & 0x80 != 0);
     }
+
+    /// INC - Increment Memory
+    pub fn inc(&mut self) {
+        let value = self.memory[self.addr_abs as usize];
+
+        // [Read-Modify-Write] Write original value back
+        self.memory[self.addr_abs as usize] = value;
+
+        // Step 2: Perform math
+        let res = value.wrapping_add(1);
+
+        // Step 3: Set flags
+        self.set_flag(Flag::Zero, res == 0);
+        self.set_flag(Flag::Negative, res & 0x80 != 0);
+
+        // Step 4: Write result
+        self.memory[self.addr_abs as usize] = res;
+    }
 }
