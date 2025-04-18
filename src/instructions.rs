@@ -7,6 +7,17 @@ pub struct Instruction {
     pub cycles: u8,
 }
 
+impl Default for Instruction {
+    fn default() -> Self {
+        Self {
+            name: "???",
+            op: |_cpu| {},
+            addr_mode: |_cpu| 0,
+            cycles: 0,
+        }
+    }
+}
+
 impl Cpu {
     /// BRK - Break (software IRQ)
     pub fn brk(&mut self) {
