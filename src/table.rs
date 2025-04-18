@@ -131,6 +131,139 @@ pub fn build_instruction_table() -> [Instruction; 256] {
             cycles: 6,
         },
 
+        0x20 => Instruction {
+            name: "jsr",
+            op: Cpu::jsr,
+            addr_mode: Cpu::abs,
+            cycles: 6,
+        },
+
+        0x21 => Instruction {
+            name: "and",
+            op: Cpu::and,
+            addr_mode: Cpu::indy,
+            cycles: 6,
+        },
+
+        0x24 => Instruction {
+            name: "bit",
+            op: Cpu::bit,
+            addr_mode: Cpu::zp0,
+            cycles: 3,
+        },
+
+        0x25 => Instruction {
+            name: "and",
+            op: Cpu::and,
+            addr_mode: Cpu::zp0,
+            cycles: 2,
+        },
+
+        0x26 => Instruction {
+            name: "rol",
+            op: Cpu::rol_mem,
+            addr_mode: Cpu::zp0,
+            cycles: 5,
+        },
+
+        0x28 => Instruction {
+            name: "plp",
+            op: Cpu::plp,
+            addr_mode: |_cpu| 0,
+            cycles: 4,
+        },
+
+        0x29 => Instruction {
+            name: "and",
+            op: Cpu::and,
+            addr_mode: Cpu::imm,
+            cycles: 2,
+        },
+
+        0x2A => Instruction {
+            name: "rol",
+            op: Cpu::rol_acc,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0x2C => Instruction {
+            name: "bit",
+            op: Cpu::bit,
+            addr_mode: Cpu::abs,
+            cycles: 4,
+        },
+
+        0x2D => Instruction {
+            name: "and",
+            op: Cpu::and,
+            addr_mode: Cpu::abs,
+            cycles: 4,
+        },
+
+        0x2E => Instruction {
+            name: "rol",
+            op: Cpu::rol_mem,
+            addr_mode: Cpu::abs,
+            cycles: 6,
+        },
+
+        0x30 => Instruction {
+            name: "bmi",
+            op: Cpu::bmi,
+            addr_mode: Cpu::rel,
+            cycles: 2,
+        },
+
+        0x31 => Instruction {
+            name: "and",
+            op: Cpu::and,
+            addr_mode: Cpu::indy,
+            cycles: 5,
+        },
+
+        0x35 => Instruction {
+            name: "and",
+            op: Cpu::and,
+            addr_mode: Cpu::zpx,
+            cycles: 4,
+        },
+
+        0x36 => Instruction {
+            name: "rol",
+            op: Cpu::rol_mem,
+            addr_mode: Cpu::zpx,
+            cycles: 6,
+        },
+
+        0x38 => Instruction {
+            name: "sec",
+            op: Cpu::sec,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0x39 => Instruction {
+            name: "and",
+            op: Cpu::and,
+            addr_mode: Cpu::absy,
+            cycles: 4,
+        },
+
+        0x3D => Instruction {
+            name: "and",
+            op: Cpu::and,
+            addr_mode: Cpu::absx,
+            cycles: 4,
+        },
+
+        0x3E => Instruction {
+            name: "rol",
+            op: Cpu::rol_mem,
+            addr_mode: Cpu::absx,
+            cycles: 7,
+        },
+
         _ => Instruction::default(),
     });
 
