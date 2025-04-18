@@ -1,5 +1,12 @@
 use crate::cpu::{Cpu, Flag};
 
+pub struct Instruction {
+    pub name: &'static str,
+    pub op: fn(&mut Cpu),              // Might be an issue later
+    pub addr_mode: fn(&mut Cpu) -> u8, // Might be an issue later
+    pub cycles: u8,
+}
+
 impl Cpu {
     /// BRK - Break (software IRQ)
     pub fn brk(&mut self) {
