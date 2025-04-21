@@ -516,6 +516,132 @@ pub fn build_instruction_table() -> [Instruction; 256] {
             cycles: 7,
         },
 
+        0x81 => Instruction {
+            name: "sta",
+            op: Cpu::sta,
+            addr_mode: Cpu::indx,
+            cycles: 6,
+        },
+
+        0x84 => Instruction {
+            name: "sty",
+            op: Cpu::sty,
+            addr_mode: Cpu::zp0,
+            cycles: 3,
+        },
+
+        0x85 => Instruction {
+            name: "sta",
+            op: Cpu::sta,
+            addr_mode: Cpu::zp0,
+            cycles: 3,
+        },
+
+        0x86 => Instruction {
+            name: "stx",
+            op: Cpu::stx,
+            addr_mode: Cpu::zp0,
+            cycles: 3,
+        },
+
+        0x88 => Instruction {
+            name: "dey",
+            op: Cpu::dey,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0x8A => Instruction {
+            name: "txa",
+            op: Cpu::txa,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0x8C => Instruction {
+            name: "sty",
+            op: Cpu::sty,
+            addr_mode: Cpu::abx,
+            cycles: 4,
+        },
+
+        0x8D => Instruction {
+            name: "sta",
+            op: Cpu::sta,
+            addr_mode: Cpu::abs,
+            cycles: 4,
+        },
+
+        0x8E => Instruction {
+            name: "stx",
+            op: Cpu::stx,
+            addr_mode: Cpu::abs,
+            cycles: 4,
+        },
+
+        0x90 => Instruction {
+            name: "bcc",
+            op: Cpu::bcc,
+            addr_mode: Cpu::rel,
+            cycles: 2,
+        },
+
+        0x91 => Instruction {
+            name: "sta",
+            op: Cpu::sta,
+            addr_mode: Cpu::indy,
+            cycles: 6,
+        },
+
+        0x94 => Instruction {
+            name: "sty",
+            op: Cpu::sty,
+            addr_mode: Cpu::zpx,
+            cycles: 4,
+        },
+
+        0x95 => Instruction {
+            name: "sta",
+            op: Cpu::sta,
+            addr_mode: Cpu::zpx,
+            cycles: 4,
+        },
+
+        0x96 => Instruction {
+            name: "stx",
+            op: Cpu::stx,
+            addr_mode: Cpu::zpy,
+            cycles: 4,
+        },
+
+        0x98 => Instruction {
+            name: "tya",
+            op: Cpu::tya,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0x99 => Instruction {
+            name: "sta",
+            op: Cpu::sta,
+            addr_mode: Cpu::absy,
+            cycles: 5,
+        },
+
+        0x9A => Instruction {
+            name: "txs",
+            op: Cpu::txs,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0x9D => Instruction {
+            name: "sta",
+            op: Cpu::sta,
+            addr_mode: Cpu::absx,
+            cycles: 5,
+        },
+
         _ => Instruction::default(),
     });
 
