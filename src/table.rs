@@ -799,7 +799,7 @@ pub fn build_instruction_table() -> [Instruction; 256] {
         0xBE => Instruction {
             name: "ldx",
             op: Cpu::ldx,
-            addr_mode: Cpu::abs,
+            addr_mode: Cpu::absy,
             cycles: 4,
         },
         _ => Instruction::default(),
