@@ -642,6 +642,166 @@ pub fn build_instruction_table() -> [Instruction; 256] {
             cycles: 5,
         },
 
+        0xA0 => Instruction {
+            name: "ldy",
+            op: Cpu::ldy,
+            addr_mode: Cpu::imm,
+            cycles: 2,
+        },
+
+        0xA1 => Instruction {
+            name: "lda",
+            op: Cpu::lda,
+            addr_mode: Cpu::indx,
+            cycles: 6,
+        },
+
+        0xA2 => Instruction {
+            name: "ldx",
+            op: Cpu::ldx,
+            addr_mode: Cpu::imm,
+            cycles: 2,
+        },
+
+        0xA4 => Instruction {
+            name: "ldy",
+            op: Cpu::ldy,
+            addr_mode: Cpu::zp0,
+            cycles: 3,
+        },
+
+        0xA5 => Instruction {
+            name: "lda",
+            op: Cpu::lda,
+            addr_mode: Cpu::zp0,
+            cycles: 3,
+        },
+
+        0xA6 => Instruction {
+            name: "ldx",
+            op: Cpu::ldx,
+            addr_mode: Cpu::zp0,
+            cycles: 3,
+        },
+
+        0xA8 => Instruction {
+            name: "tay",
+            op: Cpu::tay,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0xA9 => Instruction {
+            name: "lda",
+            op: Cpu::lda,
+            addr_mode: Cpu::imm,
+            cycles: 2,
+        },
+
+        0xAA => Instruction {
+            name: "tax",
+            op: Cpu::tax,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0xAC => Instruction {
+            name: "ldy",
+            op: Cpu::ldy,
+            addr_mode: Cpu::abs,
+            cycles: 4,
+        },
+
+        0xAD => Instruction {
+            name: "lda",
+            op: Cpu::lda,
+            addr_mode: Cpu::abs,
+            cycles: 4,
+        },
+
+        0xAE => Instruction {
+            name: "ldx",
+            op: Cpu::ldx,
+            addr_mode: Cpu::abs,
+            cycles: 4,
+        },
+
+        0xB0 => Instruction {
+            name: "bcs",
+            op: Cpu::bcs,
+            addr_mode: Cpu::rel,
+            cycles: 2,
+        },
+
+        0xB1 => Instruction {
+            name: "lda",
+            op: Cpu::lda,
+            addr_mode: Cpu::indy,
+            cycles: 5,
+        },
+
+        0xB4 => Instruction {
+            name: "ldy",
+            op: Cpu::ldy,
+            addr_mode: Cpu::zpx,
+            cycles: 4,
+        },
+
+        0xB5 => Instruction {
+            name: "lda",
+            op: Cpu::lda,
+            addr_mode: Cpu::zpx,
+            cycles: 4,
+        },
+
+        0xB6 => Instruction {
+            name: "ldx",
+            op: Cpu::ldx,
+            addr_mode: Cpu::zpy,
+            cycles: 4,
+        },
+
+        0xB8 => Instruction {
+            name: "clv",
+            op: Cpu::clv,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0xB9 => Instruction {
+            name: "lda",
+            op: Cpu::lda,
+            addr_mode: Cpu::absy,
+            cycles: 4,
+        },
+
+        0xBA => Instruction {
+            name: "tsx",
+            op: Cpu::tsx,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0xBC => Instruction {
+            name: "ldy",
+            op: Cpu::ldy,
+            addr_mode: Cpu::absx,
+            cycles: 4,
+        },
+
+        0xBD => Instruction {
+            name: "lda",
+            op: Cpu::lda,
+            addr_mode: Cpu::absx,
+            cycles: 4,
+        },
+
+        0xBE => Instruction {
+            name: "ldx",
+            op: Cpu::ldx,
+            addr_mode: Cpu::abs,
+            cycles: 4,
+        },
         _ => Instruction::default(),
     });
 
