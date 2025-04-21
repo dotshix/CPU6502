@@ -802,6 +802,140 @@ pub fn build_instruction_table() -> [Instruction; 256] {
             addr_mode: Cpu::absy,
             cycles: 4,
         },
+
+        0xC0 => Instruction {
+            name: "cpy",
+            op: Cpu::cpy,
+            addr_mode: Cpu::imm,
+            cycles: 2,
+        },
+
+        0xC1 => Instruction {
+            name: "cmp",
+            op: Cpu::cmp,
+            addr_mode: Cpu::indx,
+            cycles: 6,
+        },
+
+        0xC4 => Instruction {
+            name: "cpy",
+            op: Cpu::cpy,
+            addr_mode: Cpu::zp0,
+            cycles: 3,
+        },
+
+        0xC5 => Instruction {
+            name: "cmp",
+            op: Cpu::cmp,
+            addr_mode: Cpu::zp0,
+            cycles: 3,
+        },
+
+        0xC6 => Instruction {
+            name: "dec",
+            op: Cpu::dec,
+            addr_mode: Cpu::zp0,
+            cycles: 5,
+        },
+
+        0xC8 => Instruction {
+            name: "iny",
+            op: Cpu::iny,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0xC9 => Instruction {
+            name: "cmp",
+            op: Cpu::cmp,
+            addr_mode: Cpu::imm,
+            cycles: 2,
+        },
+
+        0xCA => Instruction {
+            name: "dex",
+            op: Cpu::dex,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0xCC => Instruction {
+            name: "cpy",
+            op: Cpu::cpy,
+            addr_mode: Cpu::abs,
+            cycles: 4,
+        },
+
+        0xCD => Instruction {
+            name: "cmp",
+            op: Cpu::cmp,
+            addr_mode: Cpu::abs,
+            cycles: 4,
+        },
+
+        0xCE => Instruction {
+            name: "dec",
+            op: Cpu::dec,
+            addr_mode: Cpu::abs,
+            cycles: 6,
+        },
+
+        0xD0 => Instruction {
+            name: "bne",
+            op: Cpu::bne,
+            addr_mode: Cpu::rel,
+            cycles: 2,
+        },
+
+        0xD1 => Instruction {
+            name: "cmp",
+            op: Cpu::cmp,
+            addr_mode: Cpu::indy,
+            cycles: 5,
+        },
+
+        0xD5 => Instruction {
+            name: "cmp",
+            op: Cpu::cmp,
+            addr_mode: Cpu::zpx,
+            cycles: 4,
+        },
+
+        0xD6 => Instruction {
+            name: "dec",
+            op: Cpu::dec,
+            addr_mode: Cpu::zpx,
+            cycles: 6,
+        },
+
+        0xD8 => Instruction {
+            name: "cld",
+            op: Cpu::cld,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0xD9 => Instruction {
+            name: "cmp",
+            op: Cpu::cmp,
+            addr_mode: Cpu::absy,
+            cycles: 4,
+        },
+
+        0xDD => Instruction {
+            name: "cmp",
+            op: Cpu::cmp,
+            addr_mode: Cpu::absx,
+            cycles: 4,
+        },
+
+        0xDE => Instruction {
+            name: "dec",
+            op: Cpu::dec,
+            addr_mode: Cpu::absx,
+            cycles: 7,
+        },
+
         _ => Instruction::default(),
     });
 
