@@ -264,6 +264,132 @@ pub fn build_instruction_table() -> [Instruction; 256] {
             cycles: 7,
         },
 
+        0x40 => Instruction {
+            name: "rti",
+            op: Cpu::rti,
+            addr_mode: |_cpu| 0,
+            cycles: 6,
+        },
+
+        0x41 => Instruction {
+            name: "eor",
+            op: Cpu::eor,
+            addr_mode: Cpu::indx,
+            cycles: 6,
+        },
+
+        0x45 => Instruction {
+            name: "eor",
+            op: Cpu::eor,
+            addr_mode: Cpu::zp0,
+            cycles: 3,
+        },
+
+        0x46 => Instruction {
+            name: "lsr",
+            op: Cpu::lsr_mem,
+            addr_mode: Cpu::zp0,
+            cycles: 5,
+        },
+
+        0x48 => Instruction {
+            name: "pha",
+            op: Cpu::pha,
+            addr_mode: |_cpu| 0,
+            cycles: 3,
+        },
+
+        0x49 => Instruction {
+            name: "eor",
+            op: Cpu::eor,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0x4A => Instruction {
+            name: "lsr",
+            op: Cpu::lsr_acc,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0x4C => Instruction {
+            name: "jmp",
+            op: Cpu::jmp,
+            addr_mode: Cpu::abs,
+            cycles: 3,
+        },
+
+        0x4D => Instruction {
+            name: "eor",
+            op: Cpu::eor,
+            addr_mode: Cpu::abs,
+            cycles: 4,
+        },
+
+        0x4E => Instruction {
+            name: "lsr",
+            op: Cpu::lsr_mem,
+            addr_mode: Cpu::abs,
+            cycles: 6,
+        },
+
+        0x50 => Instruction {
+            name: "bvc",
+            op: Cpu::bvc,
+            addr_mode: Cpu::rel,
+            cycles: 2,
+        },
+
+        0x51 => Instruction {
+            name: "eor",
+            op: Cpu::eor,
+            addr_mode: Cpu::indy,
+            cycles: 5,
+        },
+
+        0x55 => Instruction {
+            name: "eor",
+            op: Cpu::eor,
+            addr_mode: Cpu::zpx,
+            cycles: 4,
+        },
+
+        0x56 => Instruction {
+            name: "lsr",
+            op: Cpu::lsr_mem,
+            addr_mode: Cpu::zpx,
+            cycles: 6,
+        },
+
+        0x58 => Instruction {
+            name: "cli",
+            op: Cpu::cli,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0x59 => Instruction {
+            name: "eor",
+            op: Cpu::eor,
+            addr_mode: Cpu::absy,
+            cycles: 4,
+        },
+
+        0x5D => Instruction {
+            name: "eor",
+            op: Cpu::eor,
+            addr_mode: Cpu::absx,
+            cycles: 4,
+        },
+
+        0x5E => Instruction {
+            name: "lsr",
+            op: Cpu::lsr_mem,
+            addr_mode: Cpu::absx,
+            cycles: 7,
+        },
+
         _ => Instruction::default(),
     });
 
