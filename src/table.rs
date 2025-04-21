@@ -390,6 +390,132 @@ pub fn build_instruction_table() -> [Instruction; 256] {
             cycles: 7,
         },
 
+        0x60 => Instruction {
+            name: "rts",
+            op: Cpu::rts,
+            addr_mode: |_cpu| 0,
+            cycles: 6,
+        },
+
+        0x61 => Instruction {
+            name: "adc",
+            op: Cpu::adc,
+            addr_mode: Cpu::indx,
+            cycles: 6,
+        },
+
+        0x65 => Instruction {
+            name: "adc",
+            op: Cpu::adc,
+            addr_mode: Cpu::zpx,
+            cycles: 3,
+        },
+
+        0x66 => Instruction {
+            name: "ror",
+            op: Cpu::ror_mem,
+            addr_mode: Cpu::zpx,
+            cycles: 5,
+        },
+
+        0x68 => Instruction {
+            name: "pla",
+            op: Cpu::pla,
+            addr_mode: |_cpu| 0,
+            cycles: 4,
+        },
+
+        0x69 => Instruction {
+            name: "adc",
+            op: Cpu::adc,
+            addr_mode: Cpu::imm,
+            cycles: 2,
+        },
+
+        0x6A => Instruction {
+            name: "ror",
+            op: Cpu::ror_acc,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0x6C => Instruction {
+            name: "jmp",
+            op: Cpu::jmp,
+            addr_mode: Cpu::ind,
+            cycles: 5,
+        },
+
+        0x6D => Instruction {
+            name: "adc",
+            op: Cpu::adc,
+            addr_mode: Cpu::abs,
+            cycles: 4,
+        },
+
+        0x6E => Instruction {
+            name: "ror",
+            op: Cpu::ror_mem,
+            addr_mode: Cpu::abs,
+            cycles: 6,
+        },
+
+        0x70 => Instruction {
+            name: "bvs",
+            op: Cpu::bvs,
+            addr_mode: Cpu::rel,
+            cycles: 2,
+        },
+
+        0x71 => Instruction {
+            name: "adc",
+            op: Cpu::adc,
+            addr_mode: Cpu::indy,
+            cycles: 5,
+        },
+
+        0x75 => Instruction {
+            name: "adc",
+            op: Cpu::adc,
+            addr_mode: Cpu::zpx,
+            cycles: 4,
+        },
+
+        0x76 => Instruction {
+            name: "ror",
+            op: Cpu::ror_mem,
+            addr_mode: Cpu::zpx,
+            cycles: 6,
+        },
+
+        0x78 => Instruction {
+            name: "sei",
+            op: Cpu::sei,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0x79 => Instruction {
+            name: "adc",
+            op: Cpu::adc,
+            addr_mode: Cpu::absy,
+            cycles: 4,
+        },
+
+        0x7D => Instruction {
+            name: "adc",
+            op: Cpu::adc,
+            addr_mode: Cpu::absx,
+            cycles: 4,
+        },
+
+        0x7E => Instruction {
+            name: "ror",
+            op: Cpu::ror_mem,
+            addr_mode: Cpu::absx,
+            cycles: 7,
+        },
+
         _ => Instruction::default(),
     });
 
