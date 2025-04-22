@@ -101,13 +101,15 @@ impl Cpu {
     }
 
     /// Indexed Indirect (X)
-    pub fn indx(&mut self) {
+    pub fn indx(&mut self) -> u8 {
         let base = self.memory[self.pc as usize].wrapping_add(self.x); // operand + X (with wrap)
         let ptr_lo = self.memory[base as usize] as u16;
         let ptr_hi = self.memory[base.wrapping_add(1) as usize] as u16;
 
         self.addr_abs = (ptr_hi << 8) | ptr_lo;
         self.pc = self.pc.wrapping_add(1); // advance PC past operand
+
+        0
     }
 
     /// Indirect Indexed (Y)
