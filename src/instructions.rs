@@ -40,11 +40,7 @@ impl Cpu {
 
     /// JSR - Jump to Subroutine
     pub fn jsr(&mut self) {
-        // Fetch target address from instruction stream
-        self.abs(); //  sets addr_abs to target
-
-        // [TODO] Might increment PC before calling this, use `.wrapping_add(1)` instead
-        let return_addr = self.pc.wrapping_add(2);
+        let return_addr = self.pc.wrapping_sub(1);
         self.push((return_addr >> 8) as u8); // Push high byte
         self.push((return_addr & 0xFF) as u8); // Push low byte
 
