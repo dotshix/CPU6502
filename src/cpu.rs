@@ -185,8 +185,17 @@ impl Cpu {
     }
 
     pub fn zpx(&mut self) -> u8 {
-        self.addr_abs = self.memory[self.pc as usize].wrapping_add(self.x) as u16;
+        let base = self.memory[self.pc as usize];
+        self.addr_abs = base.wrapping_add(self.x) as u16 & 0x00FF;
         self.pc = self.pc.wrapping_add(1);
+        0
+    }
+
+    pub fn zpy(&mut self) -> u8 {
+        let base = self.memory[self.pc as usize];
+        self.addr_abs = base.wrapping_add(self.y) as u16 & 0x00FF; // wrap around zero page
+        self.pc = self.pc.wrapping_add(1);
+
         0
     }
 
