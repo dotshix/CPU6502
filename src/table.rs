@@ -561,7 +561,7 @@ pub fn build_instruction_table() -> [Instruction; 256] {
         0x8C => Instruction {
             name: "sty",
             op: Cpu::sty,
-            addr_mode: Cpu::abx,
+            addr_mode: Cpu::abs,
             cycles: 4,
         },
 
