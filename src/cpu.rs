@@ -1,3 +1,4 @@
+use crate::{instructions::Instruction, table::build_instruction_table};
 // Information grabbed from: https://www.nesdev.org/wiki/CPU
 
 /// Represents the 6502 CPU core used in the NES.
@@ -21,6 +22,8 @@ pub struct Cpu {
     pub fetched: u8,
     /// 64KB of addressable memory
     pub memory: [u8; 0x10000],
+
+    pub instruction_table: [Instruction; 256],
 }
 
 pub enum Flag {
@@ -220,6 +223,7 @@ impl Default for Cpu {
             addr_rel: 0,
             fetched: 0,
             memory: [0; 0x10000],
+            instruction_table: build_instruction_table(),
         }
     }
 }
