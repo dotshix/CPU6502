@@ -19,13 +19,6 @@ pub fn build_instruction_table() -> [Instruction; 256] {
             cycles: 6,
         },
 
-        0x02 => Instruction {
-            name: "ora",
-            op: Cpu::ora,
-            addr_mode: Cpu::indx,
-            cycles: 6,
-        },
-
         0x05 => Instruction {
             name: "ora",
             op: Cpu::ora,
