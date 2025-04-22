@@ -654,4 +654,10 @@ impl Cpu {
         // Step 4: Write result
         self.memory[self.addr_abs as usize] = res;
     }
+
+    /// NOP - No Operation
+    pub fn nop(&mut self) {
+
+    }
+
 }
