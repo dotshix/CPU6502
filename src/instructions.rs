@@ -21,8 +21,7 @@ impl Default for Instruction {
 impl Cpu {
     /// BRK - Break (software IRQ)
     pub fn brk(&mut self) {
-        // [TODO] Might increment PC before calling this, use `.wrapping_add(1)` instead
-        let return_addr = self.pc.wrapping_add(2);
+        let return_addr = self.pc;
 
         self.push((return_addr >> 8) as u8); // Push high byte
         self.push((return_addr & 0xFF) as u8); // push low byte
@@ -656,8 +655,5 @@ impl Cpu {
     }
 
     /// NOP - No Operation
-    pub fn nop(&mut self) {
-
-    }
-
+    pub fn nop(&mut self) {}
 }
