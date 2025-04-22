@@ -936,6 +936,139 @@ pub fn build_instruction_table() -> [Instruction; 256] {
             cycles: 7,
         },
 
+        0xE0 => Instruction {
+            name: "cpx",
+            op: Cpu::cpx,
+            addr_mode: Cpu::imm,
+            cycles: 2,
+        },
+
+        0xE1 => Instruction {
+            name: "sbc",
+            op: Cpu::sbc,
+            addr_mode: Cpu::indx,
+            cycles: 6,
+        },
+
+        0xE4 => Instruction {
+            name: "cpx",
+            op: Cpu::cpx,
+            addr_mode: Cpu::zp0,
+            cycles: 3,
+        },
+
+        0xE5 => Instruction {
+            name: "sbc",
+            op: Cpu::sbc,
+            addr_mode: Cpu::zp0,
+            cycles: 3,
+        },
+
+        0xE6 => Instruction {
+            name: "inc",
+            op: Cpu::inc,
+            addr_mode: Cpu::zp0,
+            cycles: 5,
+        },
+
+        0xE8 => Instruction {
+            name: "inx",
+            op: Cpu::inx,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0xE9 => Instruction {
+            name: "sbc",
+            op: Cpu::sbc,
+            addr_mode: Cpu::imm,
+            cycles: 2,
+        },
+
+        0xEA => Instruction {
+            name: "nop",
+            op: Cpu::nop,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0xEC => Instruction {
+            name: "cpx",
+            op: Cpu::cpx,
+            addr_mode: Cpu::abs,
+            cycles: 4,
+        },
+
+        0xED => Instruction {
+            name: "sbc",
+            op: Cpu::sbc,
+            addr_mode: Cpu::abs,
+            cycles: 4,
+        },
+
+        0xEE => Instruction {
+            name: "inc",
+            op: Cpu::inc,
+            addr_mode: Cpu::abs,
+            cycles: 6,
+        },
+
+        0xF0 => Instruction {
+            name: "beq",
+            op: Cpu::beq,
+            addr_mode: Cpu::rel,
+            cycles: 2,
+        },
+
+        0xF1 => Instruction {
+            name: "sbc",
+            op: Cpu::sbc,
+            addr_mode: Cpu::indy,
+            cycles: 5,
+        },
+
+        0xF5 => Instruction {
+            name: "sbc",
+            op: Cpu::sbc,
+            addr_mode: Cpu::zpx,
+            cycles: 4,
+        },
+
+        0xF6 => Instruction {
+            name: "inc",
+            op: Cpu::inc,
+            addr_mode: Cpu::zpx,
+            cycles: 6,
+        },
+
+        0xF8 => Instruction {
+            name: "sed",
+            op: Cpu::sed,
+            addr_mode: |_cpu| 0,
+            cycles: 2,
+        },
+
+        0xF9 => Instruction {
+            name: "sbc",
+            op: Cpu::sbc,
+            addr_mode: Cpu::absy,
+            cycles: 4,
+        },
+
+        0xFD => Instruction {
+            name: "sbc",
+            op: Cpu::sbc,
+            addr_mode: Cpu::absx,
+            cycles: 4,
+        },
+
+        0xFE => Instruction {
+            name: "inc",
+            op: Cpu::inc,
+            addr_mode: Cpu::absx,
+            cycles: 7,
+        },
+
         _ => Instruction::default(),
     });
 
