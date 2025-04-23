@@ -74,7 +74,6 @@ impl Cpu {
         let offset = raw as i8;
         self.addr_rel = offset as i16;
 
-        println!("rel: offset = {:#04X}", raw);
         self.pc = self.pc.wrapping_add(1);
         0
     }
@@ -211,15 +210,9 @@ impl Cpu {
     pub fn clock(&mut self) {
         if self.cycles == 0 {
             let opcode = self.memory[self.pc as usize];
-            println!("Opcode at {:#06X} = 0x{:02X}", self.pc, opcode);
 
             self.pc = self.pc.wrapping_add(1);
             let addr_cycles = (self.instruction_table[opcode as usize].addr_mode)(self);
-
-            println!(
-                "[{:#06X}] {} - addr_mode -> addr_abs = {:#06X}, addr_rel = {:#06X}",
-                self.pc, self.instruction_table[opcode as usize].name, self.addr_abs, self.addr_rel,
-            );
 
             (self.instruction_table[opcode as usize].op)(self);
             self.cycles = self.instruction_table[opcode as usize].cycles + addr_cycles;
