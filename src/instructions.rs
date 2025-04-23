@@ -136,6 +136,7 @@ impl Cpu {
         self.status |= 1 << Flag::Unused as u8;
 
         // Bit 4 (Break) is ignored
+        self.status &= !(1 << Flag::Break as u8);
     }
 
     /// PHA - Push A
