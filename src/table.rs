@@ -400,7 +400,7 @@ pub fn build_instruction_table() -> [Instruction; 256] {
         0x65 => Instruction {
             name: "adc",
             op: Cpu::adc,
-            addr_mode: Cpu::zpx,
+            addr_mode: Cpu::zp0,
             cycles: 3,
         },
 
