@@ -134,7 +134,7 @@ pub fn build_instruction_table() -> [Instruction; 256] {
         0x21 => Instruction {
             name: "and",
             op: Cpu::and,
-            addr_mode: Cpu::indy,
+            addr_mode: Cpu::indx,
             cycles: 6,
         },
 
