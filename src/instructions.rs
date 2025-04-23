@@ -51,8 +51,9 @@ impl Cpu {
     pub fn rti(&mut self) {
         // 1. Pull Flags
         self.status = self.pull();
-        self.status |= 1 << Flag::Unused as u8; // Always set bit 5
-
+        // Bit 5 unused → always 1; Bit 4 (Break) always ignored on RTI
+        self.status |= 1 << Flag::Unused as u8;
+        self.status &= !(1 << Flag::Break as u8);
         // 2. Pull PC low byte
         let pcl = self.pull() as u16;
 
