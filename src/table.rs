@@ -295,7 +295,7 @@ pub fn build_instruction_table() -> [Instruction; 256] {
         0x49 => Instruction {
             name: "eor",
             op: Cpu::eor,
-            addr_mode: |_cpu| 0,
+            addr_mode: Cpu::imm,
             cycles: 2,
         },
 
