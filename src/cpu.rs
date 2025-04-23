@@ -69,25 +69,20 @@ impl Cpu {
         self.memory[addr as usize]
     }
 
-    // Addressing modes below
-    // [NOTE] In abs/absx we are not modifying pc. I am however modifying it in the rest. This is a mistake
-    // A cleaner model should be:
-    //     - Let the *main instruction decode* logic handle `pc` incrementing after reading operands
-    //     - Addressing modes only compute the effective address (`addr_abs`) using operands already fetched
-    //
-    //     WILL need to refactor later on
-    //
-
     pub fn rel(&mut self) -> u8 {
-        let offset = self.memory[self.pc as usize] as i8;
-        self.addr_rel = offset as i16; // signed offset for branch logic
+        let raw = self.memory[self.pc as usize];
+        let offset = raw as i8;
+        self.addr_rel = offset as i16;
+
+        println!("rel: offset = {:#04X}", raw);
         self.pc = self.pc.wrapping_add(1);
         0
     }
 
     pub fn ind(&mut self) -> u8 {
-        let ptr_lo = self.memory[(self.pc + 1) as usize] as u16;
-        let ptr_hi = self.memory[(self.pc + 2) as usize] as u16;
+        // pc points at the low byte of the pointer
+        let ptr_lo = self.memory[self.pc as usize] as u16;
+        let ptr_hi = self.memory[self.pc.wrapping_add(1) as usize] as u16;
 
         let ptr = (ptr_hi << 8) | ptr_lo;
 
@@ -95,14 +90,15 @@ impl Cpu {
 
         // 6502 bug: if low byte is $FF, wrap around to beginning of page
         let next_byte = if ptr_lo == 0x00FF {
-            self.memory[(ptr & 0xFF00) as usize] as u16 // Wrap to $xx00
+            self.memory[(ptr & 0xFF00) as usize] as u16
         } else {
-            self.memory[(ptr + 1) as usize] as u16
+            self.memory[ptr.wrapping_add(1) as usize] as u16
         };
 
         self.addr_abs = (next_byte << 8) | addr_lo;
 
-        self.pc = self.pc.wrapping_add(2); // Advance PC past operand
+        // Consume the two-byte operand
+        self.pc = self.pc.wrapping_add(2);
         0
     }
 
@@ -135,34 +131,38 @@ impl Cpu {
         }
     }
 
-    // [NOTE] Currently assumes PC is pointing at the *opcode*
-    // Might need to modify this later to match other modes,
-    // where PC is incremented before addressing mode executes.
     pub fn abs(&mut self) -> u8 {
-        let lo = self.memory[(self.pc + 1) as usize] as u16;
-        let hi = self.memory[(self.pc + 2) as usize] as u16;
+        let lo = self.memory[self.pc as usize] as u16;
+        self.pc = self.pc.wrapping_add(1);
+
+        let hi = self.memory[self.pc as usize] as u16;
+        self.pc = self.pc.wrapping_add(1);
+
         self.addr_abs = (hi << 8) | lo;
-        0 // no extra cycles
+        0
     }
 
     pub fn absx(&mut self) -> u8 {
-        let lo = self.memory[self.pc.wrapping_add(1) as usize] as u16;
-        let hi = self.memory[self.pc.wrapping_add(2) as usize] as u16;
+        let lo = self.memory[self.pc as usize] as u16;
+        self.pc = self.pc.wrapping_add(1);
+        let hi = self.memory[self.pc as usize] as u16;
+        self.pc = self.pc.wrapping_add(1);
 
         let base = (hi << 8) | lo;
         self.addr_abs = base.wrapping_add(self.x as u16);
 
-        // Check if page was crossed
         if (base & 0xFF00) != (self.addr_abs & 0xFF00) {
-            1 // extra cycle needed
+            1
         } else {
             0
         }
     }
 
     pub fn absy(&mut self) -> u8 {
-        let lo = self.memory[self.pc.wrapping_add(1) as usize] as u16;
-        let hi = self.memory[self.pc.wrapping_add(2) as usize] as u16;
+        let lo = self.memory[self.pc as usize] as u16;
+        self.pc = self.pc.wrapping_add(1);
+        let hi = self.memory[self.pc as usize] as u16;
+        self.pc = self.pc.wrapping_add(1);
 
         let base = (hi << 8) | lo;
         self.addr_abs = base.wrapping_add(self.y as u16);
@@ -176,7 +176,7 @@ impl Cpu {
     }
 
     pub fn imm(&mut self) -> u8 {
-        self.addr_abs = self.pc + 1;
+        self.addr_abs = self.pc;
         self.pc = self.pc.wrapping_add(1);
         0
     }
@@ -206,6 +206,26 @@ impl Cpu {
     pub fn fetch(&mut self) -> u8 {
         self.fetched = self.memory[self.addr_abs as usize];
         self.fetched
+    }
+
+    pub fn clock(&mut self) {
+        if self.cycles == 0 {
+            let opcode = self.memory[self.pc as usize];
+            println!("Opcode at {:#06X} = 0x{:02X}", self.pc, opcode);
+
+            self.pc = self.pc.wrapping_add(1);
+            let addr_cycles = (self.instruction_table[opcode as usize].addr_mode)(self);
+
+            println!(
+                "[{:#06X}] {} - addr_mode -> addr_abs = {:#06X}, addr_rel = {:#06X}",
+                self.pc, self.instruction_table[opcode as usize].name, self.addr_abs, self.addr_rel,
+            );
+
+            (self.instruction_table[opcode as usize].op)(self);
+            self.cycles = self.instruction_table[opcode as usize].cycles + addr_cycles;
+        }
+
+        self.cycles = self.cycles.saturating_sub(1);
     }
 }
 
