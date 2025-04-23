@@ -407,7 +407,7 @@ pub fn build_instruction_table() -> [Instruction; 256] {
         0x66 => Instruction {
             name: "ror",
             op: Cpu::ror_mem,
-            addr_mode: Cpu::zpx,
+            addr_mode: Cpu::zp0,
             cycles: 5,
         },
 
